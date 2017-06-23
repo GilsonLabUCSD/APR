@@ -6,7 +6,7 @@
     David R. Slochower
 
 and the project leader:
-    Michael K. Gilson 
+    __Michael K. Gilson__ 
 
 
 # AcKnowledgements #
@@ -117,6 +117,8 @@ Examples of the command lines are:
     python2 apr.py prod -i apr.in -s overwrite
     python2 apr.py analysis -i apr.in (analysis does not need the -s flag)
 
+
+## Test cases ##
 
 ## How to write an APR input file ##
 The APR input file can be named by the users and should be indicated by the flag "-i" in the command line. A template of the APR input file, apr.in, is provided in the package.
