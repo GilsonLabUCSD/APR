@@ -13,7 +13,6 @@ import apr_mdin as apr_mdin
 import apr_solvate as apr_solvate
 import apr_translate as apr_translate
 import apr_restraints as apr_restraints
-import apr_parmed as apr_parmed
 import err_estimate as err_estimate
 
 class APR:
@@ -370,14 +369,18 @@ class APR:
         Check user defined pmemd/sander settings and echo
         """
         flag = 0
+        commonExe = 0        
+
         exe_str = self.exe_path.split()
         for i in range(0, len(exe_str)):
           if '-np' in exe_str[i]:
             flag = i
           if 'pmemd' in exe_str[i] or 'sander' in exe_str[i]:
             print ('%s is on.'%(exe_str[i]))
-          else:
-            print 'Neither pmemd nor sander is defined. Are you sure this is the right executable?'
+            commonExe = 1
+
+        if commonExe == 0:
+            print 'Neither pmemd nor sander has been defined. Are you sure this is the right executable?'
 
         if flag < len(exe_str) and flag > 0:
           print ('Totally %d processors are used.'%(int(exe_str[flag+1])))
@@ -470,10 +473,15 @@ class APR:
                 self.ntwprt = self.solute_atoms  # Only solute atoms will be included in the trajectory
             else:
                 self.ntwprt = 0  # All atoms will be included in the trajectory
+
             apr_mdin.write_mdin(self.md_temp, self.stepsize, self.steps, self.barostat, self.cutoff, self.ntpr, self.ntwx, self.ntwprt, self.dum_resid)
 
-            local_prmtop = apr_parmed.perturb_parameters(self.perturb, self.hmr, self.prmtop)
-            local_prmtop += '.prmtop'
+            if self.hmr == 'yes' or self.perturb == 'yes':
+                import_parmed()
+                local_prmtop = apr_parmed.perturb_parameters(self.perturb, self.hmr, self.prmtop)
+                local_prmtop += '.prmtop'
+            else:  
+                local_prmtop = self.prmtop + '.prmtop'
 
             for equilibration_counter in range(5):
                 # Thermalize and equilibrate
@@ -1113,8 +1121,20 @@ def check_versions():
     if sys.version_info[0]==2 and sys.version_info[1] == 7:
       print ('You are using Python 2.7, which is perfect for running the APR scripts.\n')
     else:
-      print ('You are using Python %d.%d. Please install or switch to Python 2.7 to run APR scripts.'%(sys.version_info[0],sys.version_info[1]))
+      print ('You are using Python %d.%d. Please install or switch to Python 2.7 in order to run APR scripts.'%(sys.version_info[0],sys.version_info[1]))
       sys.exit(1)
+
+def import_parmed():
+    """
+    check the version of parmEd and import it if it has been properly installed
+    """
+    try:
+        import apr_parmed as apr_parmed
+    except ImportError:
+        print ('\nAborted! It seems parmEd was not installed properly.')
+        print ('In order to use HMR or run MD with perturbed GAFF parameters, please install parmEd or update it to the latest version.')
+        print ('Or you can turn both HMR and the perturbing features off in the input file and just run regular mass MD with the original GAFF parameters.\n')
+        exit(1) 
 
 def main():
     # Register the signal handler to catch Ctrl+C
@@ -1127,6 +1147,7 @@ def main():
     check_versions()
     this = APR()
     this.check_arguments()
+    
     if this.action1 == 'setup':
         this.process_input_file()
         this.check_executable()
