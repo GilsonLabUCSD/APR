@@ -1,0 +1,4 @@
+; from the left to the right: atom type to be perturbed, parameter type (vdw), and the new values for radius and epsilon. Separated by space(s)
+; now only accept perturbations for nonbonded parameters of all atoms of the defined type 
+
+OW vdw 1.7577 0.1818
