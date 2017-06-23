@@ -477,7 +477,13 @@ class APR:
             apr_mdin.write_mdin(self.md_temp, self.stepsize, self.steps, self.barostat, self.cutoff, self.ntpr, self.ntwx, self.ntwprt, self.dum_resid)
 
             if self.hmr == 'yes' or self.perturb == 'yes':
-                import_parmed()
+                try:
+                    import apr_parmed as apr_parmed
+                except ImportError:
+                    print ('\nAborted! It seems parmEd was not installed properly.')
+                    print ('In order to use HMR or run MD with perturbed GAFF parameters, please install parmEd or update it to the latest version.')
+                    print ('Or you can turn both HMR and the perturbing features off in the input file and just run regular mass MD with the original GAFF parameters.\n')
+                    sys.exit(1) 
                 local_prmtop = apr_parmed.perturb_parameters(self.perturb, self.hmr, self.prmtop)
                 local_prmtop += '.prmtop'
             else:  
@@ -1123,18 +1129,6 @@ def check_versions():
     else:
       print ('You are using Python %d.%d. Please install or switch to Python 2.7 in order to run APR scripts.'%(sys.version_info[0],sys.version_info[1]))
       sys.exit(1)
-
-def import_parmed():
-    """
-    check the version of parmEd and import it if it has been properly installed
-    """
-    try:
-        import apr_parmed as apr_parmed
-    except ImportError:
-        print ('\nAborted! It seems parmEd was not installed properly.')
-        print ('In order to use HMR or run MD with perturbed GAFF parameters, please install parmEd or update it to the latest version.')
-        print ('Or you can turn both HMR and the perturbing features off in the input file and just run regular mass MD with the original GAFF parameters.\n')
-        exit(1) 
 
 def main():
     # Register the signal handler to catch Ctrl+C
