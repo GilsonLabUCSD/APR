@@ -1,0 +1,15 @@
+source leaprc.ff12SB
+source leaprc.gaff
+
+# Loading the ion parameters 
+loadamberparams frcmod.ionsjc_tip3p
+loadamberparams frcmod.ionsjc_spce
+loadamberparams frcmod.ionsjc_tip4pew 
+
+loadamberparams oa.frcmod
+OCT = loadmol2 oa.mol2
+loadamberparams cba.frcmod
+MOL = loadmol2 cba.mol2
+loadamberparams dum.frcmod
+DUM = loadmol2 dum.mol2
+model = loadpdb vac.pdb

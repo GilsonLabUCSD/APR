@@ -1,0 +1,11 @@
+source leaprc.protein.ff14SB
+source leaprc.gaff
+
+loadamberparams oa.frcmod
+OCT = loadmol2 oa.mol2
+loadamberparams cba.frcmod
+MOL = loadmol2 cba.mol2
+loadamberparams dum.frcmod
+DUM = loadmol2 dum.mol2
+model = loadpdb vac.pdb
+
