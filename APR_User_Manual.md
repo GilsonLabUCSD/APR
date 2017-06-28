@@ -34,15 +34,15 @@ J. Comput. Chem., 2013, 34(27), 2360-2371. http://onlinelibrary.wiley.com/doi/10
 
 # Introduction #
 
-The APR (attach-pull-release) protocols have been used to generate moderate to strong correlations between experimental and computational binding thermodynamics based on 
+The APR (attach-pull-release) protocols have been shown to generate moderate to strong correlations between experimental and computational binding thermodynamics based on 
 a broad testing of host-guest systems including cucurbit[7]uril (CB7), β-cyclodextrin (β-CD), octa acid (OA) and tetra-endo-methyl octa-acid (TEMOA) with guest molecules. 
-For the detailed theoretical framework, methodology, and validation of APR approach, please refer to the publications listed aboved and a tutorial for Amber users:
+For the detailed methodology and validation of APR approach, please refer to the publications listed aboved and a tutorial for Amber users:
 http://ambermd.org/tutorials/advanced/tutorial29/.
 
-The current version of APR scripts is still a demonstration of how to use the pulling approach to compute binding thermodynamics. You can use it on host-guest complexes 
+The current version of APR scripts (v1.1) is a demonstration of how to use pulling approach to compute binding thermodynamics. You can apply it on host-guest complexes 
 with a minimal effort of setting up your workflow. 
  
-If you are planning on computing the binding affinities of proteins, please be aware that careful adjustments of the protocols and scripts will be needed, 
+If you are planning on computing the binding affinities of protein-ligand systems, please be aware that careful adjustments of the protocols and scripts will be needed, 
 based on the requirements of every particular system. In addition, be extremely cautious about using the APR approach to compute binding affinities for proteins with 
 buried binding sites, as those may present convergence issues due to the significant conformational change of the protein during the pulling process. A recent advance of 
 APR applications on protein systems can be found here: http://pubs.acs.org/doi/abs/10.1021/acs.jctc.7b00275.
@@ -61,16 +61,16 @@ The APR scripts were written in Python language. To execute them, you need Pytho
 consider using the miniconda distribution which can be installed optionally in Amber16. You can invoke this Python version with $AMBERHOME/miniconda/bin/python. 
 Another alternative is to install Python 2.7 through Anaconda (https://www.continuum.io/downloads).
 
-To use APR scripts for binding calcultions, work stations that enable GPU acceleration of Amber are highly recommended. Please remember to set the environment variable 
+Work stations that enable GPU acceleration of Amber are also highly recommended for running APR scripts. Please remember to set the environment variable 
 "CUDA_VISIBLE_DEVICES" to prevent multiple simulations from running on a single GPU. It is possible to run the tutorial with pmemd.MPI, pmemd, and even sander, 
-but it will take much longer.
+but it will take significantly longer to finish the calculations.
 
 ## Topology and coordinate Files ##
-The current APR scripts do not include a built-in docking program. Therefore, a PDB file of the bound struture needs to be provided with all the water and counterions removed,
+The current APR scripts do not include a built-in docking program. Therefore, a PDB file of the bound structure needs to be provided with all the water molecules and counterions removed,
 since those will be added within the APR workflow later on. For small molecules,
 mol2 files and possibly frcmod files are required. Those files need to be saved in the ./APR/setup/pdb and ./APR/setup/parameter_files directories, accordingly. They should also be indicated
-in ./APR/setup/input_files/tleap.in.amber16 if using Amber16, and ./APR/setup/input_files/tleap.in.amber14, if using Amber14. The Amber topology (.prmtop) and coordinate (.inpcrd)
-files will be generated in the workflow.
+in ./APR/setup/input_files/tleap.in.amber16, if using Amber16, and in ./APR/setup/input_files/tleap.in.amber14, if using Amber14. The Amber topology (.prmtop) and coordinate (.inpcrd)
+files will be generated within the workflow.
 
 ## Atom and residue selections ##
 The Amber-mask style syntax is adopted for atom and residue selections. The characters ":" and "@" are used for atom and residue selections, respectively. For the residue selections,
@@ -96,22 +96,22 @@ those in the original PDB file, if they are not the same.
 ## Dummy atoms ##
 Imposing restraints is crucial for performing binding calculations with the APR method. Distance, angle, and dihedral restraints are usually required to fix the position and orientation 
 of the system (For more details see Henriksen NM, Fenley AT, Gilson MK. J. Chem. Theory Comput., 2015, 11(9), 4377-4394).
-Anchor particles,i.e. dummy atoms come in handy for setting up restraints. In APR version 1.1, three dummy atoms are appended to the end of the output file
-generated by zalign.py (align_z.pdb). These dummy atoms were assigned by an atom name of "Pb" and a residue name of "DUM", but they have no charge or volume, yet an atomic mass of 220 Da. 
+Anchor particles, i.e. dummy atoms come in handy for setting up restraints. In APR version 1.1, three dummy atoms are appended to the end of the output file
+generated by zalign.py (align_z.pdb). These dummy atoms will be assigned by the atom name of "Pb" and the residue name of "DUM", but they have no charge or volume, yet an atomic mass of 220 Da. 
 The coordinates of the dummy atoms were hand-coded at this moment, but they can be directly modified in align_z.pdb to adapt to the need of each unique system.    
 
 ## Command lines ##
-APR was designed as a three-step program, which carries out the tasks of running equilibration, production and conducting analysis in sequence. To start the program,
+APR is a three-step program which carries out the tasks of running equilibration, production and conducting analysis sequentially. To start the program,
 you need to first indicate which step you would like to run with the corresponding keyword:
 
     eq            Set up the APR framework and run the equilibration
     prod          Run the production phase
     analysis      Run the analysis and print the final results
 
-Meanwhile, two restarting modes, "overwrite" and "continue",  are available for the "eq" and "prod" steps. The overwrite mode should be used whenever any setting in the APR input file 
-(see below) has been changed, or when the tleap.in, PDB or mol2 files have been added, replaced or modified. It will discard
-previous equilibration (if used with eq) or simulation results (if used with prod) and start freshly from the first umbrella sampling window. In constrast, the "continue" mode will 
-pick up from where the equilibration or production stops. Restarting modes are indicated with the "-s" flag. Both "continue" and "overwrite" can be used for the first time run. 
+Meanwhile, two restarting modes, "overwrite" and "continue",  are available for both "eq" and "prod" steps. The overwrite mode should be used whenever any setting in the APR input file 
+(see below) is changed, or when the tleap.in, PDB or mol2 files have been added, replaced or modified in the setup folder. The overwrite mode will discard
+previous equilibration (if used with eq) or simulation results (if used with prod) and start freshly from the first umbrella sampling window. In constrast, the continue mode will 
+pick up from where the equilibration or production stops. Restarting modes are indicated with the "-s" flag. Note that both "continue" and "overwrite" can be used for the first time run. 
 
 Examples of the command lines are:
 
@@ -121,16 +121,16 @@ Examples of the command lines are:
 
 
 ## Test case ##
-The input and parameters files for an example system -- octa acid and its guest 4-cyanobenzoic acid were saved within the setup folder in the APR package. Those should be either modified or replaced 
-when computing the bind free energy for your own system. The template user input file apr.in was also written according to this test case.    
+Input and parameters files for a test system -- octa acid and its guest 4-cyanobenzoic acid were saved within the setup folder in the APR package. Those should be either modified or replaced 
+when computing the bind free energy for your own system. The template user input file apr.in was also written based on this example.    
 
 
 ## How to write an APR input file ##
 The APR input file can be named by the users and should be indicated by the flag "-i" in the command line. A template of the APR input file, apr.in, is available in the APR package.
 Comments starting with a semicolon in this file will not be parsed. The values of the options are case sensitive (except for YES, NO, ON and OFF) while the options themselves are not. 
 Not providing options or simply leaving the values blank may not cause abortion of the program, but it will likely cause unexpected consequences. Therefore, it is strongly recommended to specify
-all the listed options as instructed in the template file. Options and values are seperated with an equal sign ("="). The spaces before and after the equal sign are not mandatory.
-On the other hand, some options contain an underscore ("_") to make sure that they are parsed as continuous strings. Please do not replace it with spaces or hyphen.   
+all the listed options as instructed in the template file. Options and values are seperated with an equal sign (" = "). The spaces before and after the equal sign are not mandatory.
+On the other hand, some options contain underscores (" _ ") to make sure that they are parsed as continuous strings. Please do not replace them with spaces or hyphens.   
       
 Options are explained below in details.
 
@@ -142,7 +142,8 @@ If Amber16 will be used, use YES; otherwise use NO.
 
 ### HMR <YES/NO> ###
 This option is to specify whether hydrogen mass repartitioning will be used to accelerate the MD simulations for both of the equilibration and production phases. 
-If HMR is used, remember to specify relatively large stepsizes (e.g. 4 fs) for the dt and eq_dt options (see below).  
+If HMR is used, remember to specify relatively large stepsizes (e.g. 4 fs) for the dt and eq_dt options (see below). The HMR feature requires the installation of 
+the Amber built-in or the stand-alone version of parmEd.  
 
 For more details for the HMR technique, please read: Hopkins, Chad W., et al. "Long-time-step molecular dynamics through hydrogen mass repartitioning." 
 Journal of chemical theory and computation 11.4 (2015): 1864-1874.
@@ -155,8 +156,9 @@ The same temperature will be used for equilibration, production and data analysi
 
 ### perturb <YES/NO> ###
 GAFF (general Amber force field) will be used to parameterize small molecules. This option allows the users to run MD with perturbed GAFF parameters. Right now only the feature of perturbing
-nonbonded parameters is supported. If the value of this option is specified as YES, new parameters need to be listed in a file named new_parameters.dat and saved in 
-./APR/setup/param_files directory. A template file of new_parameters.dat is provided in the package.    
+LJ parameters (radius and epsilon) is supported. If the value of this option is specified as YES, new parameters need to be listed in a file named new_parameters.dat and saved in 
+./APR/setup/param_files directory. A template file of new_parameters.dat is provided in the package. This feature also requires the installation of 
+the Amber built-in or the stand-alone version of parmEd.    
 
 ### attach_list \<a python list of float values> ###
 The number of windows in the attach phase is equal to the number of elements in the attach_list option. The value indicates the weight (%) of restraints imposed on the ligand atoms
