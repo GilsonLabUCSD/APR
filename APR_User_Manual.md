@@ -134,13 +134,13 @@ On the other hand, some options contain underscores (" _ ") to make sure that th
       
 Options are explained below in details.
 
-### Amber16 <YES/NO> ###  
+### Amber16 <yes/no> ###  
 The current APR workflow is closely coupled with the Amber suite of programs. This option is to indicate the version of Amber installed in the computing environment. 
 The reason to distinguish different versions is that the tleap module in Amber16 uses slightly different syntax from that in older versions of Amber.
 
-If Amber16 was installed, put YES; otherwise put NO.
+If Amber16 was installed, put yes; otherwise put no.
 
-### HMR <YES/NO> ###
+### HMR <yes/no> ###
 This option is to indicate whether the hydrogen mass repartitioning is intended to be used in accelerating MD simulations for the equilibration and the production phases. 
 If HMR is used, remember to use relatively large step sizes (e.g. 4 fs) for the dt and eq_dt options (see below). The HMR feature requires the installation of 
 the Amber built-in or the stand-alone version of parmEd.  
@@ -154,7 +154,7 @@ Executables to run MD simulations, depending on your computing environment.
 ### temperature \<float> ###
 The same temperature will be used for equilibration, production and data analysis.
 
-### perturb <YES/NO> ###
+### perturb <yes/no> ###
 GAFF (general Amber force field) will be used to parameterize small molecules. This option allows the users to run MD with perturbed GAFF parameters. Currently only the feature of perturbing
 LJ parameters (radius and epsilon) is available. If the value of this option is specified as YES, new parameters need to be listed in a file named new_parameters.dat and saved in the
 ./APR/setup/param_files directory. A template file, new_parameters.dat is available in the package. This feature also requires the installation of 
@@ -186,7 +186,7 @@ The target value of water molecules to be added to the simulation box in each wi
 water molecules. To add the same number of water molecules to the simulation box in each window, the APR solvation module adopts an iterative approach which will gradually reduce
 the difference between the amount of added water and the target value. 
 
-### warning <YES/NO> ###
+### warning <yes/no> ###
 Estimations can be made in each umbrella sampling window based on the size of the system about how many water molecules are needed to solvate the system. A warning message can be printed out
 if the difference between the estimated number and target value (via the option waters) is larger than 500. Put yes to turn this warning on, and no to turn it off if 
 the users are certain about their choices.
@@ -232,7 +232,8 @@ One of the three receptor atoms selected for imposing receptor restraints. Also 
 
 ### L1 \<an Amber-mask style string for atom selection> ###
 One of the two ligand atoms selected for imposing ligand restraints. L1 is also the origin of the aligned structure in align_z.pdb. Given how the restraints are currently set up,
-L1 should locate between L2 (see below) and the dummy atoms. (For more detailed illustrations, see Figure S1 in Henriksen et al. http://pubs.acs.org/doi/suppl/10.1021/acs.jctc.5b00405.)
+L1 should locate between L2 (see below) and the dummy atoms. (For more detailed illustrations, see Figure S1 in Henriksen et al. http://pubs.acs.org/doi/suppl/10.1021/acs.jctc.5b00405.
+Note that different notations were used.)
 
 ### L2 \<an Amber-mask style string for atom selection> ###
 One of the two ligand atoms selected for imposing ligand restraints. 
@@ -296,20 +297,20 @@ The threshold of SEM for the forces in the pulling phase, in the unit of kcal/mo
 ### maxsem_release \<float> ###
 The threshold of SEM for the forces in the release phase, only used when there are conformational restraints (see the option jacks); The value should match sem_attach.
 
-### jacks <YES/NO> ###
+### jacks <yes/no> ###
 If conformational restraints will be imposed, put YES, otherwise put NO.
 
 ### jacks_distance \<float> ###
-If jacks = YES, this option defines the restrained distance between two atoms (see the jacks_list option), in the unit of angstrom. If jacks = NO, it is OK to leave the default value there
+If jacks = yes, this option defines the restrained distance between two atoms (see the jacks_list option), in the unit of angstrom. If jacks = NO, it is OK to leave the default value there
 or simply to leave it blank.
 
 ### jacks_force \<float> ###
-If jacks = YES, this option defines the force constant for the conformational distance restraints, in the unit of kcal/mol/Angstrom**2.
+If jacks = yes, this option defines the force constant for the conformational distance restraints, in the unit of kcal/mol/Angstrom**2.
 
 ### jacks_list \<a python list of strings> ###
-This option will put conformational restraints between the first atom and the second atom in the list, then the third and the fourth and so on. For example, in this case,
+This option will put conformational restraints between the first atom and the second atom in the list, and then the third and the fourth and so on. For example, in this case,
 the distance between atom :OCT@O20 and :OCT@O19 will be restrained as 15 angstroms, and the distance between :OCT@O14 and :OCT@O17 will be restrained as 15 angstroms as well, 
-if jacks = YES. 
+if jacks = yes. 
 
 
 ## Tips and tricks ##
@@ -317,7 +318,7 @@ if jacks = YES.
 Besides the screen output of the final results, the APR analysis module also generates two files, TI_attachment.dat and TI_translation.dat to record the 
 accumulative work after each window.    
 
-The restart files and the trajectories are in the format of NetCDF but can be converted to other formats such as inpcrd or PDB using Cpptraj. If water and ions are stripped, 
+The restart files and the trajectories are in the format of NetCDF, but can be converted to other formats such as inpcrd or PDB using Cpptraj. If water and ions are stripped, 
 vac.prmtop (topology in the gas phase) should be used for parsing the trajectories instead of solvated.prmtop.
 
 If necessary, more pmemd/sander options can be modified directly in the apr_mdin.py file. 
