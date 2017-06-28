@@ -193,7 +193,7 @@ the users are certain about their choices.
 
 ### neutralizing_cation \<string> ###     
 The type of cations used for neutralization. Any ion name that can be recognized by tleap should work here. The number of the neutralizing cations will be determined automatically,
-therefore there is no need to specify it here. For instance,
+therefore, there is no need to specify it here. For instance,
 if the system has a net negative charge of 10, a totally of 10 neutralizing cations (assuming monovalent) will be added during the solvation process, and neutralizing anions will not be
 added (see below). For positively charged systems, neutralizing cations will not be added, so it is okay to leave the default value (Na+) there, or just leave it blank.
 
@@ -284,7 +284,7 @@ trajectories, otherwise all atoms will be stored. This option is corresponding t
 the disk space, if the analysis later on does not require any information from water and counterions.
 
 ### maxcycle \<int> ###
-The number of iterations(trajectories) in each window. The maxinum number of iterations is fixed as 20. Note that the specified number of iteratons may not always be achieved.
+The number of iterations(trajectories) in each window. The maximum number of iterations is fixed as 20. Note that the specified number of iterations may not always be achieved.
 The simulation ends if (1) the SEM estimate of the forces goes below a certain threshold (see options below) or (2) it reaches the maximum simulation time, whichever comes first,
 to save the computational cost.    
 
@@ -326,14 +326,14 @@ vac.prmtop (topology in the gas phase) should be used for parsing the trajectori
 * A lot of errors you may encounter when first setting the APR workflow have something to do with parameterization and solvlation steps. Usually checking the tleap log files
 vac_tleap.log and solvate_tleap.log will provide you hints about the causes of errors, as what you would normally do for trouble shooting tleap/Amber errors.  
 
-* It is safe to ingore the error messages such as "traj.0X matches no files" in the restraints.log file. The cause of those error messages is that the specified number of iteratons
-may not always be achieved, whereas the maxinum number of iterations is still fixed as 20.  
+* It is safe to ignore the error messages such as "traj.0X matches no files" in the restraints.log file. The cause of those error messages is that the specified number of iterations
+may not always be achieved, whereas the maximum number of iterations is still fixed as 20.  
 
 * The disang.rest file stores all essential information about how the restraints are set up. 
 
 * When using the HMR and perturb features, checking the parmed.log file is a good way to make sure that the parameters are perturbed as intended.
 
-* Of course the most safe approach to make sure everything works as intended is to visually inspect the restart files and trajectories. The configurations of your sysytem will
+* Of course, the most safe approach to make sure everything works as intended is to visually inspect the restart files and trajectories. The configurations of your system will
 imply whether the alignment, dummy atoms, solvation, translation and restraints were all done and set up correctly.     
 
    
