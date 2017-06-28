@@ -315,25 +315,25 @@ if jacks = yes.
 
 ## Tips and tricks ##
 
-Besides the screen output of the final results, the APR analysis module also generates two files, TI_attachment.dat and TI_translation.dat to record the 
+* Besides the screen output of the final results, the APR analysis module also generates two files, TI_attachment.dat and TI_translation.dat to record the 
 accumulative work after each window.    
 
-The restart files and the trajectories are in the format of NetCDF, but can be converted to other formats such as inpcrd or PDB using Cpptraj. If water and ions are stripped, 
+* The restart files and the trajectories are in the format of NetCDF, but can be converted to other formats such as inpcrd or PDB using Cpptraj. If water and ions are stripped, 
 vac.prmtop (topology in the gas phase) should be used for parsing the trajectories instead of solvated.prmtop.
 
-If necessary, more pmemd/sander options can be modified directly in the apr_mdin.py file. 
+* If necessary, more pmemd/sander options can be modified directly in the apr_mdin.py file. 
 
-A lot of errors you may encounter when first setting the APR workflow have something to do with parameterization and solvlation steps. Usually checking the tleap log files
+* A lot of errors you may encounter when first setting the APR workflow have something to do with parameterization and solvlation steps. Usually checking the tleap log files
 vac_tleap.log and solvate_tleap.log will provide you hints about the causes of errors, as what you would normally do for trouble shooting tleap/Amber errors.  
 
-It is safe to ingore the error messages such as "traj.0X matches no files" in the restraints.log file. The cause of those error messages is that the specified number of iteratons
+* It is safe to ingore the error messages such as "traj.0X matches no files" in the restraints.log file. The cause of those error messages is that the specified number of iteratons
 may not always be achieved, whereas the maxinum number of iterations is still fixed as 20.  
 
-The disang.rest file stores all essential information about how the restraints are set up. 
+* The disang.rest file stores all essential information about how the restraints are set up. 
 
-When using the HMR and perturb features, checking the parmed.log file is a good way to make sure that the parameters are perturbed as intended.
+* When using the HMR and perturb features, checking the parmed.log file is a good way to make sure that the parameters are perturbed as intended.
 
-Of course the most safe approach to make sure everything works as intended is to visually inspect the restart files and trajectories. The configurations of your sysytem will
+* Of course the most safe approach to make sure everything works as intended is to visually inspect the restart files and trajectories. The configurations of your sysytem will
 imply whether the alignment, dummy atoms, solvation, translation and restraints were all done and set up correctly.     
 
    
