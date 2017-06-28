@@ -1,9 +1,9 @@
-### APR 1.1 User Manual (last updated 2017/03) ###
+### APR 1.1 User Manual (last updated 2017/06) ###
 
 # Contributors to the current code #
-    Niel M. Henriksen
-    Jian (Jane) Yin
-    David R. Slochower
+    __Niel M. Henriksen__
+    __Jian (Jane) Yin__
+    __David R. Slochower__
 
 and the project leader:
     __Michael K. Gilson__ 
@@ -14,12 +14,6 @@ and the project leader:
 The development of APR (attach-pull-release), a binding calculation tool was made possible by support from NIH and 
 Air Force Office of Scientific Research (AFOSR) Basic Research Initiative (BRI) grant.
 
-
-# Notes #
-
-The current APR scripts may not be immediately applied to protein systems, especially for those with buried binding sites. 
-Careful adjustments of the protocols and scripts will be needed, based on the requirements of every particular system.
- 
 
 # APR Papers #
 
@@ -40,16 +34,16 @@ J. Comput. Chem., 2013, 34(27), 2360-2371. http://onlinelibrary.wiley.com/doi/10
 
 The APR (attach-pull-release) protocols have been used to generate moderate to strong correlations between experimental and computational binding thermodynamics based on 
 a broad testing of host-guest systems including cucurbit[7]uril (CB7), β-cyclodextrin (β-CD), octa acid (OA) and tetra-endo-methyl octa-acid (TEMOA) with guest molecules. 
-For the detailed theoretical framework, methodology, and validation of APR approach, please refer to the publications listed aboved and a tutorial for AMBER users:
-http://ambermd.org/tutorials/advanced/tutorial29/
+For the detailed theoretical framework, methodology, and validation of APR approach, please refer to the publications listed aboved and a tutorial for Amber users:
+http://Ambermd.org/tutorials/advanced/tutorial29/
 
 The current version of APR scripts is still a demonstration of how to use the pulling approach to compute binding thermodynamics. You can use it on host-guest complexes 
 with a minimal effort of setting up your workflow. 
  
 If you are planning on computing the binding affinities of proteins, please be aware that careful adjustments of the protocols and scripts will be needed, 
 based on the requirements of every particular system. In addition, be extremely cautious about using the APR approach to compute binding affinities for proteins with 
-buried binding sites, as those may present convergence issues due to the significant conformational change of the protein during the pulling process. We are working hard 
-to make features available for protein systems.
+buried binding sites, as those may present convergence issues due to the significant conformational change of the protein during the pulling process. A recent advance of 
+APR applications on protein systems can be found here: http://pubs.acs.org/doi/abs/10.1021/acs.jctc.7b00275.
 
 
 # What can APR scripts do? #
@@ -62,17 +56,18 @@ for the system along the way. Equilibration, simulation, and data analysis are a
 
 ## Installation ##
 The APR scripts were written in Python language. To execute them, you need Python version 2.7 installed on your machine. If you don't have access to Python 2.7, 
-consider using the miniconda distribution that is optionally installed in Amber16. You can invoke this Python version with $AMBERHOME/miniconda/bin/python. 
+consider using the miniconda distribution which can be installed optionally in Amber16. You can invoke this Python version with $AmberHOME/miniconda/bin/python. 
 Another alternative is to install Python 2.7 through Anaconda (https://www.continuum.io/downloads).
 
-To use APR scripts for binding calcultions, work stations that enable GPU acceleration of AMBER are highly recommended. Please remember to set the environment variable 
+To use APR scripts for binding calcultions, work stations that enable GPU acceleration of Amber are highly recommended. Please remember to set the environment variable 
 "CUDA_VISIBLE_DEVICES" to prevent multiple simulations from running on a single GPU. It is possible to run the tutorial with pmemd.MPI, pmemd, and even sander, 
 but it will take much longer.
 
 ## Topology and coordinate Files ##
-The current APR scripts do not include a built-in docking program. Therefore, a PDB file of the bound struture needs to be provided. For small molecules,
+The current APR scripts do not include a built-in docking program. Therefore, a PDB file of the bound struture needs to be provided with all the water and counterions removed,
+since those will be added within the APR workflow later on. For small molecules,
 mol2 files and possibly frcmod files are required. Those files need to be saved in the ./APR/setup/pdb and ./APR/setup/parameter_files directories, accordingly. They should also be indicated
-in ./APR/setup/input_files/tleap.in.amber16 if using Amber16, and ./APR/setup/input_files/tleap.in.amber14, if using Amber14. The Amber topology (.prmtop) and coordinate (.inpcrd)
+in ./APR/setup/input_files/tleap.in.Amber16 if using Amber16, and ./APR/setup/input_files/tleap.in.Amber14, if using Amber14. The Amber topology (.prmtop) and coordinate (.inpcrd)
 files will be generated in the workflow.
 
 ## Atom and residue selections ##
@@ -84,17 +79,22 @@ either the residue name or the sequence number can be recognized in the lastest 
     :MOL,OCT,3,10-12  Select all residues with names MOL and OCT, as well as residues 3, 10, 11 and 12
     :MOL@C1           Select an atom with the name C1 at the residue MOL
 
-Wildcard features are not supported for now.  
+Wildcard features are not supported at this point.  
 
 ## System alignment ## 
 APR is a pulling approach. To pull the ligand out along a straight line, aligning the system with the longest dimension of the simulation box, the Z-axis will make things a lot easier. We
 currently provide a stand-alone script called zalign.py to help the users with this task. The usage of zalign is introduced by issuing the command python zalign.py.
-Alternatively, a series of molecular visualization programs such as VMD and Chimera can be used for system alignment.     
+Alternatively, a series of molecular visualization programs such as VMD and Chimera can be used for system alignment.
+
+It is also noteworthy that the residue numbers in the PDB file are subject to change after alignment. The reason is that the tleap program in Amber re-number the residues if they do not start at 1.
+Zalign adopts the same numbering convention used in tleap to keep things consistent. The residue numbers in align_z.pdb should be used for selecting atoms to impose restraints, rather than
+those in the original PDB file, if they are not the same.       
+     
 
 ## Dummy atoms ##
 Imposing restraints is crucial for performing binding calculations with the APR method. Distance, angle, and dihedral restraints are usually required to fix the position and orientation 
 of the system (For more details see Henriksen NM, Fenley AT, Gilson MK. J. Chem. Theory Comput., 2015, 11(9), 4377-4394).
-Anchor particles,i.e. dummy atoms come in handy for setting up restraints. In the latest version of APR, three dummy atoms will be appended to the end of the output file
+Anchor particles,i.e. dummy atoms come in handy for setting up restraints. In APR version 1.1, three dummy atoms are appended to the end of the output file
 generated by zalign.py (align_z.pdb). These dummy atoms were assigned by an atom name of "Pb" and a residue name of "DUM", but they have no charge or volume, yet an atomic mass of 220 Da. 
 The coordinates of the dummy atoms were hand-coded at this moment, but they can be manually changed quite easily in align_z.pdb according to user preference.    
 
@@ -118,10 +118,13 @@ Examples of the command lines are:
     python2 apr.py analysis -i apr.in (analysis does not need the -s flag)
 
 
-## Test cases ##
+## Test case ##
+The input and parameters files for an example system -- octa acid and its guest 4-cyanobenzoic acid were saved within the setup folder in the package. Those should be either modified or replaced 
+when computing the bind free energy for your own system. The template user input file apr.in was also written according to this system.    
+
 
 ## How to write an APR input file ##
-The APR input file can be named by the users and should be indicated by the flag "-i" in the command line. A template of the APR input file, apr.in, is provided in the package.
+The APR input file can be named by the users and should be indicated by the flag "-i" in the command line. A template of the APR input file, apr.in, is available in the package.
 Comments starting with a semicolon in this file will not be parsed. The values of the options are case sensitive (except for YES, NO, ON and OFF) while the options themselves are not. 
 Not providing options or simply leaving the values blank may not cause abortion of the program, but it will likely cause unexpected consequences. Therefore, it is strongly recommended to specify
 all the listed options as instructed in the template file. Options and values are seperated with an equal sign ("="). The spaces before and after the equal sign are not mandatory.
@@ -130,7 +133,7 @@ On the other hand, some options contain an underscore ("_") to make sure that th
 Options are explained below in details.
 
 ### Amber16 <YES/NO> ###  
-The 1.1 APR version is closely coupled with the AMBER suite of program. This option is to specify the version of Amber installed in the computing environment. 
+The 1.1 APR version is closely coupled with the Amber suite of program. This option is to specify the version of Amber installed in the computing environment. 
 The reason to distinguish different versions is that the tleap module in Amber16 uses slightly different format from that in older versions of Amber.
 
 If Amber16 will be used, use YES; otherwise use NO.
@@ -172,7 +175,7 @@ Force constant for the angle and torsion restraints imposed on the receptor and 
 The angle and torsion restraints are currently not supported in the conformational restraints (only distance restraints). 
 
 ### water_model \<string> ###
-This option supports all the water models available in AMBER: TIP3P, TIP4P, TIP4PEW, TIP5P, OPC etc.
+This option supports all the water models available in Amber: TIP3P, TIP4P, TIP4PEW, TIP5P, OPC etc.
 
 ### waters \<int> ###
 The exact number of water molecules in the simulation box of each window. The APR method requires the simulation box in every umbrella sampling window having exactly the same 
