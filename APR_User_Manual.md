@@ -11,7 +11,7 @@ and the project leader:
     Michael K. Gilson 
 
 
-# AcKnowledgements #
+# Acknowledgements #
 
 The development of APR (attach-pull-release), a binding calculation tool was made possible by support from NIH and 
 Air Force Office of Scientific Research (AFOSR) Basic Research Initiative (BRI) grant.
@@ -74,7 +74,7 @@ files will be generated within the workflow.
 
 ## Atom and residue selections ##
 The Amber-mask style syntax is adopted for atom and residue selections. The characters ":" and "@" are used for atom and residue selections, respectively. For the residue selections,
-either the residue name or the sequence number can be recognized in the lastest version of APR. A mixture of those two is also recognizable. Examples are:
+either the residue name or the sequence number can be recognized in the latest version of APR. A mixture of those two is also recognizable. Examples are:
 
     :MOL              Only select residues with the name MOL
     :6-10             Select residues 6 to 10
@@ -108,9 +108,9 @@ you need to first indicate which step you would like to run with the correspondi
     prod          Run the production phase
     analysis      Run the analysis and print the final results
 
-Meanwhile, two restarting modes, "overwrite" and "continue",  are available for both "eq" and "prod" steps. The overwrite mode should be used whenever any setting in the APR input file 
+Meanwhile, two restarting modes, "overwrite" and "continue", are available for both "eq" and "prod" steps. The overwrite mode should be used whenever any setting in the APR input file 
 (see below) is changed, or when the tleap.in, PDB or mol2 files have been added, replaced or modified in the setup folder. The overwrite mode will discard
-previous equilibration (if used with eq) or simulation results (if used with prod) and start freshly from the first umbrella sampling window. In constrast, the continue mode will 
+previous equilibration (if used with eq) or simulation results (if used with prod) and start freshly from the first umbrella sampling window. In contrast, the continue mode will 
 pick up from where the equilibration or production stops. Restarting modes are indicated with the "-s" flag. Note that both "continue" and "overwrite" can be used for the first time run. 
 
 Examples of the command lines are:
@@ -129,76 +129,77 @@ when computing the bind free energy for your own system. The template user input
 The APR input file can be named by the users and should be indicated by the flag "-i" in the command line. A template of the APR input file, apr.in, is available in the APR package.
 Comments starting with a semicolon in this file will not be parsed. The values of the options are case sensitive (except for YES, NO, ON and OFF) while the options themselves are not. 
 Not providing options or simply leaving the values blank may not cause abortion of the program, but it will likely cause unexpected consequences. Therefore, it is strongly recommended to specify
-all the listed options as instructed in the template file. Options and values are seperated with an equal sign (" = "). The spaces before and after the equal sign are not mandatory.
+all the listed options as instructed in the template file. Options and values are separated with an equal sign (" = "). The spaces before and after the equal sign are not mandatory.
 On the other hand, some options contain underscores (" _ ") to make sure that they are parsed as continuous strings. Please do not replace them with spaces or hyphens.   
       
 Options are explained below in details.
 
 ### Amber16 <YES/NO> ###  
-The 1.1 APR version is closely coupled with the Amber suite of program. This option is to specify the version of Amber installed in the computing environment. 
-The reason to distinguish different versions is that the tleap module in Amber16 uses slightly different format from that in older versions of Amber.
+The current APR workflow is closely coupled with the Amber suite of programs. This option is to indicate the version of Amber installed in the computing environment. 
+The reason to distinguish different versions is that the tleap module in Amber16 uses slightly different syntax from that in older versions of Amber.
 
-If Amber16 will be used, use YES; otherwise use NO.
+If Amber16 was installed, put YES; otherwise put NO.
 
 ### HMR <YES/NO> ###
-This option is to specify whether hydrogen mass repartitioning will be used to accelerate the MD simulations for both of the equilibration and production phases. 
-If HMR is used, remember to specify relatively large stepsizes (e.g. 4 fs) for the dt and eq_dt options (see below). The HMR feature requires the installation of 
+This option is to indicate whether the hydrogen mass repartitioning is intended to be used in accelerating MD simulations for the equilibration and the production phases. 
+If HMR is used, remember to use relatively large step sizes (e.g. 4 fs) for the dt and eq_dt options (see below). The HMR feature requires the installation of 
 the Amber built-in or the stand-alone version of parmEd.  
 
 For more details for the HMR technique, please read: Hopkins, Chad W., et al. "Long-time-step molecular dynamics through hydrogen mass repartitioning." 
 Journal of chemical theory and computation 11.4 (2015): 1864-1874.
     
 ### exe_path \<'pmemd.cuda','mpirun -np 12 pmemd.MPI', 'pmemd', 'sander'...> ###
-Executables to run MD simulations, depending on how the computing environment was set up. 
+Executables to run MD simulations, depending on your computing environment. 
 
 ### temperature \<float> ###
 The same temperature will be used for equilibration, production and data analysis.
 
 ### perturb <YES/NO> ###
-GAFF (general Amber force field) will be used to parameterize small molecules. This option allows the users to run MD with perturbed GAFF parameters. Right now only the feature of perturbing
-LJ parameters (radius and epsilon) is supported. If the value of this option is specified as YES, new parameters need to be listed in a file named new_parameters.dat and saved in 
-./APR/setup/param_files directory. A template file of new_parameters.dat is provided in the package. This feature also requires the installation of 
-the Amber built-in or the stand-alone version of parmEd.    
+GAFF (general Amber force field) will be used to parameterize small molecules. This option allows the users to run MD with perturbed GAFF parameters. Currently only the feature of perturbing
+LJ parameters (radius and epsilon) is available. If the value of this option is specified as YES, new parameters need to be listed in a file named new_parameters.dat and saved in the
+./APR/setup/param_files directory. A template file, new_parameters.dat is available in the package. This feature also requires the installation of 
+the Amber built-in or the stand-alone version of ParmEd (http://parmed.github.io/ParmEd/html/index.html).    
 
 ### attach_list \<a python list of float values> ###
-The number of windows in the attach phase is equal to the number of elements in the attach_list option. The value indicates the weight (%) of restraints imposed on the ligand atoms
-in each umbrellla sampling window.
+The number of windows in the attach phase is equal to the number of elements in the attach_list option. The value of each element indicates the weight (%) of restraints imposed on the ligand atoms
+in each umbrella sampling window, which will be printed out in the first line of the disang.rest file, after the keyword "Weight". 
 
 ### translate_list \<a python list of float values> ###
-The number of windows in the pulling phase is determined by the length of the translate_list option. Each value in translate_list indicates the distance between the ligand and its 
-original position. 
+The number of windows in the pulling phase is equal to the number of elements in the translate_list option. The value of each element defines the how far the ligand will be pulled away
+relative to its original position in each umbrella sampling window, which will printed out in the first line of the disang.rest file, after the keyword "TransDist". 
 
-It is OK to write the list in multiple lines as long as it is wrapped by brackets.
+It is OK to write the list into multiple lines as long as it is wrapped by brackets.
 
 ### distance_force \<float> ###
 Force constant for the distance restraints imposed on the receptor and ligand atoms, in the unit of kcal/mol/Angstrom**2. This is only for the translational and rotational restraints.
-The force constant of conformational restraints (if any) is speficied seperately by the option of jacks_force.
+The force constant of conformational restraints (if any) is specified separately using the jacks_force option.
 
 ### angle_force \<float> ###
 Force constant for the angle and torsion restraints imposed on the receptor and ligand atoms. The unit is kcal/mol/rad**2. This is only for the translational and rotational restraints.
-The angle and torsion restraints are currently not supported in the conformational restraints (only distance restraints). 
+The angle and torsion restraints are currently not supported for the conformational restraints (distance restraints only). 
 
 ### water_model \<string> ###
 This option supports all the water models available in Amber: TIP3P, TIP4P, TIP4PEW, TIP5P, OPC etc.
 
 ### waters \<int> ###
-The exact number of water molecules in the simulation box of each window. The APR method requires the simulation box in every umbrella sampling window having exactly the same 
-number of water molecules. To achieve this, the solvation module in APR uses an iterative approach to build the simulation box which gradually narrows the difference between
-the added water and the desired number of water. 
+The target value of water molecules to be added to the simulation box in each window. The tleap program in Amber does not provide the feature of solvating a system with a fixed number of 
+water molecules. To add the same number of water molecules to the simulation box in each window, the APR solvation module adopts an iterative approach which will gradually reduce
+the difference between the amount of added water and the target value. 
 
 ### warning <YES/NO> ###
-An estimation is made in each unbrella sampling window based on the size of the system about how many water molecules are needed to solvate the system. A warning message can be printed out
-if the difference between the estimated number and the number requested by the user (via the option waters) is larger than 500. Use yes to turn this warning on, and no to turn it off if 
+Estimations can be made in each umbrella sampling window based on the size of the system about how many water molecules are needed to solvate the system. A warning message can be printed out
+if the difference between the estimated number and target value (via the option waters) is larger than 500. Put yes to turn this warning on, and no to turn it off if 
 the users are certain about their choices.
 
 ### neutralizing_cation \<string> ###     
-The type of cations used for neutralization. Anything that works for tleap in Amber should work here. The number of the neutralizing cations is determined automatically. For instance,
-if the system has a net negative charge of 10, a totally of 10 neutralizing cations (assuming monovalent) will be added during the solvation process and neutralizing anions will not be added
-(see below). Neutralizing cations will not be added to a positively charged system. It is okay to leave the option blank in that case, but the option should not matter anyway.
+The type of cations used for neutralization. Any ion name that can be recognized by tleap should work here. The number of the neutralizing cations will be determined automatically,
+therefore there is no need to specify it here. For instance,
+if the system has a net negative charge of 10, a totally of 10 neutralizing cations (assuming monovalent) will be added during the solvation process, and neutralizing anions will not be
+added (see below). For positively charged systems, neutralizing cations will not be added, so it is okay to leave the default value (Na+) there, or just simply make a blank option.
 
 ### neutralizing_anion	\<string> ###
-The type of anions used for neutralization. Similarly, the number of the neutralizing cations is determined automatically. Neutralizing anions will not be added to a negatively-charged
-system.
+The type of anions used for neutralization. Similarly, the number of the neutralizing cations will be determined automatically. Neutralizing anions will not be added to negatively charged
+systems.
 
 ### cations \<string> ###
 This option is for adding extra cations on top of the neutralizing ones. If not needed, specify the number of cations (via the option number_cations) as 0.
@@ -213,15 +214,15 @@ For adding extra anions on top of the neutralizing ones. If not needed, specify 
 The number of extra anions added to mimic the buffer conditions. Also see anions.
 
 ### LIG \<an Amber-mask style string for residue selection> ###
-This option is for the users to indicate all the atoms that belong to the ligand. This information is needed for manipulating the initial coordinates of the ligand atoms in each 
-umbrella sampling window when pulling the ligand out. Both residue names and residue sequence numbers using Amber mask style are acceptable (e.g. :MOL :5). 
-Selections of atoms are not supported for this option.   
+This option is for the users to indicate all the atoms that belong to the ligand. This information is needed for manipulating the coordinates of the ligand atoms in each 
+umbrella sampling window in order to pull the ligand out. Both residue names and residue sequence numbers with the Amber mask style are acceptable (e.g. :MOL :5). 
+Directly selecting atoms are currently not supported for this option.   
 
 ### R1 \<an Amber-mask style string for atom selection> ### 
 One of the three receptor atoms selected for imposing restraints. Examples are: :OCT@C1, :1@N2. 
 
 R1, R2 and R3 (see below) should not lie in the same line, and they should locate at
-the relatively rigid regions of the receptor in order to maintain robust restraints.
+relatively rigid regions of the receptor in order to maintain robust restraints.
 
 ### R2 \<an Amber-mask style string for atom selection> ###
 One of the three receptor atoms selected for imposing receptor restraints. Also see R1.
@@ -230,8 +231,8 @@ One of the three receptor atoms selected for imposing receptor restraints. Also 
 One of the three receptor atoms selected for imposing receptor restraints. Also see R1.
 
 ### L1 \<an Amber-mask style string for atom selection> ###
-One of the two ligand atoms selected for imposing ligand restraints. L1 is also the origin of the aligned struture in align_z.pdb. Given how the restraints are currently set up,
-L1 should locate between L2 (see below) and the dummy atoms. 
+One of the two ligand atoms selected for imposing ligand restraints. L1 is also the origin of the aligned structure in align_z.pdb. Given how the restraints are currently set up,
+L1 should locate between L2 (see below) and the dummy atoms. (For more detailed illustrations, see Figure S1 in Henriksen et al. http://pubs.acs.org/doi/suppl/10.1021/acs.jctc.5b00405.)
 
 ### L2 \<an Amber-mask style string for atom selection> ###
 One of the two ligand atoms selected for imposing ligand restraints. 
@@ -239,46 +240,49 @@ One of the two ligand atoms selected for imposing ligand restraints.
 ### eq_dt \<int> ###
 The step size for the NPT runs in the equilibration phase, in the unit of femtosecond (fs). Normally it is 2 fs. If hydrogen mass repartitioning is used (controlled by the option HMR), 
 this value can be increased to around 4.
-Note that the equilibration phase consists of four steps: a minimization, a NVT run of 1 ps at 10 K, a 100 ps heat-up from 10 K 
-to a user-defined temperature (via the option temperature), and 50 cycles of NPT runs. This option only controls the step size for the NPT runs. The step sizes of other steps are 
+Note that the equilibration phase consists of four steps: a minimization step, a NVT phase of 1 ps at 10 K, a 100 ps heat-up from 10 K 
+to a user-defined target temperature (via the option temperature), and lastly, 50 cycles of NPT runs. Note This option only controls the step size for the last step of NPT runs. The step sizes of other steps were 
 hand coded as 2 fs.
 
 ### eq_nstlim \<int> ###     
-The number of steps for the NPT runs in the equilibration phase. For example, if the step size is 2 fs (controlled by the option eq_dt), giving it a value of 2500 will allow a NPT run of 
+The number of steps for the NPT runs in the equilibration phase. For example, if the step size is 2 fs (controlled by the option eq_dt), assigning it a value of 2500 will launch a NPT run of 
 5 ps per cycle and 250 ps in total (the number of cycles is fixed as 50).
 
 ### eq_barostat \<1/2> ###
-Barostat options for the NPT runs in the equilibration phase ; 1 is Berendsen and 2 is Monte Carlo.
+Barostat options for the NPT runs in the equilibration phase; 1 is Berendsen and 2 is Monte Carlo.
 
 ### eq_cutoff \<int> ###
-Cutoff distance of the van der Waals interactions or the NPT runs in the equilibration phase, in the unit of angstrom. Long-range corrections is automatically applied.
+Cutoff distance of the van der Waals for the 50 cycles of NPT runs in the equilibration phase, in the unit of angstrom. Long-range corrections will be automatically
+applied on top of it (see Amber manual).
 
 ### dt \<int> ###
 The step size for the production runs, in the unit of fs. Normally it is 2 fs. If hydrogen mass repartitioning is used (controlled by the option HMR),
 this value can be increased to around 4.
 
 ### nstlim \<int> ###
-The number of steps for the production runs in the equilibration phase. For example, if the step size is 2 fs (controlled by the option dt), giving it a value of 2500000 will allow a 
-production run of 5 ns per cycle and 100 ns in maxinum (the maxinum number of cycles is fixed as 20). 
+The number of steps for the production runs. For example, if the step size is 2 fs (controlled by the option dt), assigning it a value of 2500000 will launch a 
+production run of 5 ns per cycle and 100 ns in maximum (the maximum number of cycles is fixed as 20). Note that the maximum of simulation time may not always be achieved. ...
 
 ### barostat \<1/2> ###
 Barostat options for the production runs; 1 is Berendsen and 2 is Monte Carlo.
 
 ### cutoff \<int> ###
-Cutoff distance of the van der Waals interactions or the production runs, in the unit of angstrom. Long-range corrections is automatically applied.
+Cutoff distance of the van der Waals for the production runs, in the unit of angstrom. Long-range corrections will be automatically applied on top of it (see Amber manual).
 
 ### ntpr \<int> ### 
 Frequency of printing energy terms to the Amber output file (.mdout). If the step size is 2 fs (controlled by the option dt), giving it a value of 500 will allow the Amber program
-to write the the output file every 1 ps.
+to write the output file every 1 ps.
 
 ### ntwx \<int> ###
 Frequency of recording frames to the trajectory (in NetCDF format). If the step size is 2 fs (controlled by the option dt), giving it a value of 500 will allow the Amber program
-to write the the trajectory every 1 ps.
+to write the trajectory every 1 ps.
 
 ### strip_water_ions <YES/NO> ###
 This option determines whether the water molecules and counterions will be stripped in the MD trajectories. If yes, only the solute atoms (including the dummy atoms) will be saved in the
-trajectories, otherwise all atoms will be stored. This option is linked to the ntwprt variable used in Amber input files. Only saving the solute atoms is recommended for saving
-the disk space, if the analysis later on does not involve anything about water and ions.
+trajectories, otherwise all atoms will be stored. This option is corresponding to the ntwprt variable in Amber input files. Only saving the solute atoms is recommended for saving
+the disk space, if the analysis later on does not require any information from water and counterions.
+
+
 
 The restart files and the trajectories are in the format of NetCDF but can be converted to other formats such as mdcrd or PDB using Cpptraj. If water and ions are stripped, 
 vac.prmtop (topology in the gas phase) should be used for parsing the trajectories instead of solvated.prmtop.
