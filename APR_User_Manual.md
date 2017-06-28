@@ -278,7 +278,7 @@ to write the output file every 1 ps.
 Frequency of recording frames to the trajectory (in NetCDF format). If the step size is 2 fs (controlled by the option dt), giving it a value of 500 will allow the Amber program
 to write the trajectory every 1 ps.
 
-### strip_water_ions <YES/NO> ###
+### strip_water_ions <yes/no> ###
 This option determines whether the water molecules and counterions will be stripped in the MD trajectories. If yes, only the solute atoms (including the dummy atoms) will be saved in the
 trajectories, otherwise all atoms will be stored. This option is corresponding to the ntwprt variable in Amber input files. Only saving the solute atoms is recommended for saving
 the disk space, if the analysis later on does not require any information from water and counterions.
