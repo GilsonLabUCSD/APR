@@ -176,7 +176,7 @@ The force constant of conformational restraints (if any) is specified separately
 
 ### angle_force \<float> ###
 Force constant for the angle and torsion restraints imposed on the receptor and ligand atoms. The unit is kcal/mol/rad**2. This is only for the translational and rotational restraints.
-The angle and torsion restraints are currently not supported for the conformational restraints (distance restraints only). 
+The angle and torsion restraints are currently not available for the conformational restraints (see the jacks_force option). 
 
 ### water_model \<string> ###
 This option supports all the water models available in Amber: TIP3P, TIP4P, TIP4PEW, TIP5P, OPC etc.
@@ -195,7 +195,7 @@ the users are certain about their choices.
 The type of cations used for neutralization. Any ion name that can be recognized by tleap should work here. The number of the neutralizing cations will be determined automatically,
 therefore there is no need to specify it here. For instance,
 if the system has a net negative charge of 10, a totally of 10 neutralizing cations (assuming monovalent) will be added during the solvation process, and neutralizing anions will not be
-added (see below). For positively charged systems, neutralizing cations will not be added, so it is okay to leave the default value (Na+) there, or just simply make a blank option.
+added (see below). For positively charged systems, neutralizing cations will not be added, so it is okay to leave the default value (Na+) there, or just leave it blank.
 
 ### neutralizing_anion	\<string> ###
 The type of anions used for neutralization. Similarly, the number of the neutralizing cations will be determined automatically. Neutralizing anions will not be added to negatively charged
@@ -260,8 +260,8 @@ The step size for the production runs, in the unit of fs. Normally it is 2 fs. I
 this value can be increased to around 4.
 
 ### nstlim \<int> ###
-The number of steps for the production runs. For example, if the step size is 2 fs (controlled by the option dt), assigning it a value of 2500000 will launch a 
-production run of 5 ns per cycle and 100 ns in maximum (the maximum number of cycles is fixed as 20). Note that the maximum of simulation time may not always be achieved. ...
+The number of MD steps for the production runs in each iteration. For example, if the step size is 2 fs (controlled by the option dt), assigning it a value of 2500000 will launch a 
+production run of 5 ns per cycle.
 
 ### barostat \<1/2> ###
 Barostat options for the production runs; 1 is Berendsen and 2 is Monte Carlo.
@@ -282,14 +282,58 @@ This option determines whether the water molecules and counterions will be strip
 trajectories, otherwise all atoms will be stored. This option is corresponding to the ntwprt variable in Amber input files. Only saving the solute atoms is recommended for saving
 the disk space, if the analysis later on does not require any information from water and counterions.
 
+### maxcycle \<int> ###
+The number of iterations(trajectories) in each window. The maxinum number of iterations is fixed as 20. Note that the specified number of iteratons may not always be achieved.
+The simulation ends if (1) the SEM estimate of the forces goes below a certain threshold (see options below) or (2) it reaches the maximum simulation time, whichever comes first,
+to save the computational cost.    
+
+### maxsem_attach \<float> ###
+The threshold of standard error of the mean (SEM) for the forces in the attach phase, in the unit of kcal/mol.
+
+### maxsem_pull \<float> ###
+The threshold of SEM for the forces in the pulling phase, in the unit of kcal/mol.
+
+### maxsem_release \<float> ###
+The threshold of SEM for the forces in the release phase, only used when there are conformational restraints (see the option jacks); The value should match sem_attach.
+
+### jacks <YES/NO> ###
+If conformational restraints will be imposed, put YES, otherwise put NO.
+
+### jacks_distance \<float> ###
+If jacks = YES, this option defines the restrained distance between two atoms (see the jacks_list option), in the unit of angstrom. If jacks = NO, it is OK to leave the default value there
+or simply to leave it blank.
+
+### jacks_force \<float> ###
+If jacks = YES, this option defines the force constant for the conformational distance restraints, in the unit of kcal/mol/Angstrom**2.
+
+### jacks_list \<a python list of strings> ###
+This option will put conformational restraints between the first atom and the second atom in the list, then the third and the fourth and so on. For example, in this case,
+the distance between atom :OCT@O20 and :OCT@O19 will be restrained as 15 angstroms, and the distance between :OCT@O14 and :OCT@O17 will be restrained as 15 angstroms as well, 
+if jacks = YES. 
 
 
-The restart files and the trajectories are in the format of NetCDF but can be converted to other formats such as mdcrd or PDB using Cpptraj. If water and ions are stripped, 
+## Tips and tricks ##
+
+Besides the screen output of the final results, the APR analysis module also generates two files, TI_attachment.dat and TI_translation.dat to record the 
+accumulative work after each window.    
+
+The restart files and the trajectories are in the format of NetCDF but can be converted to other formats such as inpcrd or PDB using Cpptraj. If water and ions are stripped, 
 vac.prmtop (topology in the gas phase) should be used for parsing the trajectories instead of solvated.prmtop.
 
-If necessary, more options can be modified manually through the apr_mdin.py file. 
+If necessary, more pmemd/sander options can be modified directly in the apr_mdin.py file. 
 
-more here...
+A lot of errors you may encounter when first setting the APR workflow have something to do with parameterization and solvlation steps. Usually checking the tleap log files
+vac_tleap.log and solvate_tleap.log will provide you hints about the causes of errors, as what you would normally do for trouble shooting tleap/Amber errors.  
 
-## How to interpret the APR output files ##
-To be continued ...
+It is safe to ingore the error messages such as "traj.0X matches no files" in the restraints.log file. The cause of those error messages is that the specified number of iteratons
+may not always be achieved, whereas the maxinum number of iterations is still fixed as 20.  
+
+The disang.rest file stores all essential information about how the restraints are set up. 
+
+When using the HMR and perturb features, checking the parmed.log file is a good way to make sure that the parameters are perturbed as intended.
+
+Of course the most safe approach to make sure everything works as intended is to visually inspect the restart files and trajectories. The configurations of your sysytem will
+imply whether the alignment, dummy atoms, solvation, translation and restraints were all done and set up correctly.     
+
+   
+   
