@@ -1,11 +1,13 @@
 ### APR 1.1 User Manual (last updated 2017/06) ###
 
 # Contributors to the current code #
+
     __Niel M. Henriksen__
     __Jian (Jane) Yin__
     __David R. Slochower__
 
 and the project leader:
+
     __Michael K. Gilson__ 
 
 
@@ -86,8 +88,8 @@ APR is a pulling approach. To pull the ligand out along a straight line, alignin
 currently provide a stand-alone script called zalign.py to help the users with this task. The usage of zalign is introduced by issuing the command python zalign.py.
 Alternatively, a series of molecular visualization programs such as VMD and Chimera can be used for system alignment.
 
-It is also noteworthy that the residue numbers in the PDB file are subject to change after alignment. The reason is that the tleap program in Amber re-number the residues if they do not start at 1.
-Zalign adopts the same numbering convention used in tleap to keep things consistent. The residue numbers in align_z.pdb should be used for selecting atoms to impose restraints, rather than
+It is also noteworthy that the residue numbers in the PDB file are subject to change after alignment. The reason is that the tleap program in Amber re-number the residues if they do not start at "1".
+Zalign adopts the same numbering convention used in tleap to keep things consistent. The residue numbers in align_z.pdb (output from zalign.py) should be used for selecting atoms to impose restraints, rather than
 those in the original PDB file, if they are not the same.       
      
 
