@@ -233,7 +233,7 @@ One of the three receptor atoms selected for imposing receptor restraints. Also 
 ### L1 \<an Amber-mask style string for atom selection> ###
 One of the two ligand atoms selected for imposing ligand restraints. L1 is also the origin of the aligned structure in align_z.pdb. Given how the restraints are currently set up,
 L1 should locate between L2 (see below) and the dummy atoms. (For more detailed illustrations, see Figure S1 in Henriksen et al. http://pubs.acs.org/doi/suppl/10.1021/acs.jctc.5b00405.
-Note that different notations were used.)
+Note that notations for atoms are different.)
 
 ### L2 \<an Amber-mask style string for atom selection> ###
 One of the two ligand atoms selected for imposing ligand restraints. 
