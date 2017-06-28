@@ -215,14 +215,6 @@ def find_index(usr_input, pdbfile, option):
     """
     atom = usr_input.split('@')[1]
     residue = usr_input.split('@')[0][1:]
-    resname  = 'None'
-    res_id = 99999
-
-    try:
-        int(residue)   
-        res_id = int(residue)
-    except:
-        resname = residue
 
     flag = 0 
 
@@ -230,7 +222,7 @@ def find_index(usr_input, pdbfile, option):
      
     for line in pdb_file:
         if line[0:6].strip() == 'ATOM' or line[0:6].strip() == 'HETATM': 
-            if (line[17:20].strip() == resname or int(line[22:26].strip())==res_id) and line[12:16].strip() == atom:
+            if (line[17:20].strip() == residue or line[22:26].strip() == residue) and line[12:16].strip() == atom:
                 flag = 1
                 break
     pdb_file.close()

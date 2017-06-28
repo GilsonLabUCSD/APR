@@ -8,7 +8,7 @@ import subprocess as sp
 import sys as sys
 import re
 
-def setup_translate(distance, lig_resid, lig_resname):
+def setup_translate(distance, ligand_residue):
     """
     Move the guest away from the host (zero distance) is used for the attachment phase.
     :param distance: distance between the guest and host
@@ -26,7 +26,9 @@ def setup_translate(distance, lig_resid, lig_resname):
     total_atom = 0
 
     f =  open('align_z.pdb')
+
     for line in f:
+        line = line.rstrip()
         splitdata = line.split()
         if (splitdata[0]=='ATOM')or(splitdata[0]=='HETATM'):
             total_atom += 1
@@ -37,9 +39,9 @@ def setup_translate(distance, lig_resid, lig_resname):
             cols_after_coords.append(line[54:81])
 
             resname = line[17:20].strip()
-            resid = int(line[22:26])
+            resid = line[22:26].strip()
 
-            if resname in lig_resname or resid in lig_resid:
+            if resname in ligand_residue or resid in ligand_residue:
                z_coord += distance
             coords.append((x_coord, y_coord, z_coord))
 

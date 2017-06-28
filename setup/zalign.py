@@ -13,24 +13,25 @@ import re
 
 def align_exception():
   print ''
-  print '*****************************************************************************************************************************'
-  print '                                             Welcome to Zalign!\n'
+  print '***********************************************************************'
+  print '                      Welcome to Zalign!\n'
   print 'Options:' 
   print '    -f: location and name of the PDB file\n'
-  print '    -a1, -a2, -a3: indices of three non-linear atoms (receptor or ligand) that you think should' 
-  print '     lie in the same XY plane after the Z-axis alignment.\n'
-  print '    -a4: a fourth atom that is supposed to have more negative Z coordinates than the first three,'
-  print '     so that the molecule will point to the desired +Z or -Z direction.\n'
-  print '    -c: the new origin of the aligned structure. The selected atom should be the same as the L1'
-  print '        option in the APR input file.\n'
+  print '    -a1, -a2, -a3: indices of three non-linear atoms (could be in either' 
+  print '     receptor or ligand) that you think should lie in the same XY plane'
+  print '     after the Z-axis alignment.\n'
+  print '    -a4: a fourth atom that is supposed to have more negative Z'
+  print '     coordinates than the first three, so that the molecule will'
+  print '     point to the desired +Z or -Z direction.\n'
+  print '    -c: the new origin of the aligned structure. The selected atom'
+  print '     should be the same as the L1 option in the APR input file.\n'
   print '    -r: the rotation angle (in degrees) around the z axis.\n'
-  print '    -cutoff: cutoff value for generating the final structure. Using a larger cutoff value (in Angstrom)'
-  print '     will generate alignment with higer precision, but will of course cost more time for searching.\n'
-  print 'For example: python zalign.py -f pdb/oa_cba.pdb -a1 :OCT@O3 -a2 :OCT@O7 -a3 :OCT@O8 -a4 :OCT@O11 -r 85 -cutoff 0.05 -c :MOL@N1'
-  print '             python zalign.py -f pdb/hsa-ligand.pdb -a1 :545@NZ -a2 :406@CB -a3 :541@NZ -a4 :573@NZ -cutoff 0.1 -r 0 -c :MYR@C8'
-  print '             python zalign.py -f pdb/b-hex-s.pdb -a1 :6@O1 -a2 :8@O1 -a3 :10@O1 -a4 :8@H62 -cutoff 0.05 -r 0 -c :HEX@C6'
-  print '*******************************************************************************************************************************'
-  print '\n'
+  print '    -cutoff: cutoff value for generating the final structure. Using'
+  print '     a larger cutoff value (in Angstrom) will generate alignment with'
+  print '     higher precision, but will of course takes more time to search.\n'
+  print 'For example: python zalign.py -f pdb/oa_cba.pdb -a1 :OCT@O3 -a2 :OCT@O7'
+  print '             -a3 :OCT@O8 -a4 :OCT@O11 -r 85 -cutoff 0.05 -c :MOL@N1'
+  print '***********************************************************************'
   return
 
 # Check if the user input is an integer, a float number or a string
@@ -64,7 +65,7 @@ def ismyinstance(val_type, val, str):
   elif (val_type == 'int'):
         return int(val) 
 
-def find_index(usr_input, pdbfile):
+def find_index(usr_input, PDBEntries):
     """
     Find the atom index of an atom in a PDB file.
     :param name: atom name (in PDB file)
@@ -73,38 +74,24 @@ def find_index(usr_input, pdbfile):
     """
     atom = usr_input.split('@')[1]
     residue = usr_input.split('@')[0][1:]
-    resname  = 'None'
-    res_id = 99999
-
-    if ismyinstance('int',residue,'N/A'):
-        # residue number  was provided
-        res_id = int(residue)
-    else:
-        resname = residue
 
     flag = 0 
 
-    with open(pdbfile) as pdb_file:
-        lines = (line.rstrip('\n') for line in pdb_file)
-        lines = list(line for line in pdb_file) 
- 
-    for i in range(0, len(lines)):
-        newline = lines[i].split()
-        if newline[0] == 'ATOM' or newline[0] == 'HETATM':
-            if (newline[3] == resname or int(lines[i][22:27].strip())==res_id) and newline[2] == atom:
+    for i in range(0, len(PDBEntries)):
+        if PDBEntries[i][0:6].strip() == 'ATOM' or PDBEntries[i][0:6].strip() == 'HETATM':
+            if (PDBEntries[i][17:20].strip() == residue or PDBEntries[i][22:26].strip() == residue) and PDBEntries[i][12:16].strip() == atom:
                 flag = 1
                 break
-    pdb_file.close()
 
     if not flag :
         print ('%s cannot be found.'%(usr_input))
         sys.exit()    
 
-    return int(newline[1])
+    return i
 
 
 # Check if a file exists
-def check_file(pdb_file):
+def checkFile(pdb_file):
     try:
       f = open(pdb_file,'r');
     except IOError:
@@ -112,18 +99,32 @@ def check_file(pdb_file):
       sys.exit()
     f.close()  
 
+def readFile(pdb_file):
+    content = []
+
+    with open(pdb_file) as f_in:
+        lines = (line.rstrip() for line in f_in)
+        lines = list(line for line in lines if line) # Non-blank lines in a list
+
+    for i in range(len(lines)):
+        splitdata = lines[i].split()
+        # skip the header lines and seperating lines
+        if (splitdata[0]=='ATOM')or(splitdata[0]=='HETATM')or(splitdata[0]=='TER'):
+            content.append(lines[i])
+
+    return content
+
 # Release the memory of a list
 def release_list(a):
     del a[:]
     del a
 
-################################
-#      zalign starts          #
+################################ zalign starts ##########################################
                           
 if (len(sys.argv)!=17):
     align_exception()
-    print 'Aborted. Check to see if you missed any flags.'
-    sys.exit()
+    print 'Aborted. Check to see if you missed any flags.\n'
+    sys.exit(1)
 
 #read arguments from the command line
 
@@ -148,48 +149,47 @@ for i in arg_list:
     else:
       print 'Wrong flags!! Please only use -f, -a1, -a2, -a3, -a4, -c, -r or -cutoff.'  
 
-check_file(pdb_file)
+checkFile(pdb_file)
+PDBatomEntries = readFile(pdb_file)
 
-idx1 = find_index(R1,pdb_file)
-idx2 = find_index(R2,pdb_file)
-idx3 = find_index(R3,pdb_file)
-idx4 = find_index(R4,pdb_file)
-idx_origin = find_index(L1,pdb_file)
+idx1 = find_index(R1,PDBatomEntries)
+idx2 = find_index(R2,PDBatomEntries)
+idx3 = find_index(R3,PDBatomEntries)
+idx4 = find_index(R4,PDBatomEntries)
+idx_origin = find_index(L1,PDBatomEntries)
 
 # read coordinates and other information from the PDB file
 
 total_atom  = 0
 coords = []
 ter_list = []
-
-cols_before_coords = []
-cols_after_coords = []
+cols_before_resNumber = []
+aChar_list = []
+cols_after_coords = [] # Including everything after the coordinate columns
 ter_row = []
-
-# Keep track of the residue numbers and atom numbers
-resid = []
-atom_id = []
+resNumber_list = []
 
 newPDB_file = open('align_z.pdb', 'w')
 
-with open(pdb_file) as f_in:
-    lines = (line.rstrip() for line in f_in)
-    lines = list(line for line in lines if line) # Non-blank lines in a list   
+total_atom = 0 # not including "TER" entries
 
-for i in range(len(lines)):
-    splitdata = lines[i].split()
-    # skip the header lines and seperating lines  
-    if (splitdata[0]=='ATOM')or(splitdata[0]=='HETATM'):
+resid = 1
+
+for i in range(len(PDBatomEntries)):
+    if (PDBatomEntries[i][0:6].strip()=='ATOM')or(PDBatomEntries[i][0:6].strip()=='HETATM'):
+        cols_before_resNumber.append(PDBatomEntries[i][0:22])
         total_atom += 1
-        coords.append((float(lines[i][30:38].strip()), float(lines[i][38:46].strip()), float(lines[i][46:54].strip())))
-        resid.append(int(lines[i][22:26]))
-        atom_id.append(int(lines[i][6:11]))
-        cols_before_coords.append(lines[i][0:30])
-        cols_after_coords.append(lines[i][54:81])
- 
-    elif splitdata[0] == 'TER':
+        coords.append((float(PDBatomEntries[i][30:38].strip()), float(PDBatomEntries[i][38:46].strip()), float(PDBatomEntries[i][46:54].strip())))
+        if i > 0:
+            if PDBatomEntries[i-1][22:26]!=PDBatomEntries[i][22:26]:
+                resid += 1
+        resNumber_list.append(resid)
+        aChar_list.append(PDBatomEntries[i][26:30])  
+        cols_after_coords.append(PDBatomEntries[i][54:81])
+
+    elif PDBatomEntries[i][0:6].strip() == 'TER':
         ter_list.append(total_atom)
-        ter_row.append(lines[i])
+        
 
 flag = 0
 print 'Start searching'
@@ -258,17 +258,18 @@ j = 0
 # Write the new pdb file
 if (flag == 1):
     for i in range(len(coords)):
-        newPDB_file.write('%s%8.3f%8.3f%8.3f%s\n'%(cols_before_coords[i], coords_new3[i][0], coords_new3[i][1], coords_new3[i][2],cols_after_coords[i]))
+        newPDB_file.write('%s%4d%s%8.3f%8.3f%8.3f%s\n'%(cols_before_resNumber[i], resNumber_list[i], aChar_list[i], coords_new3[i][0],\
+                                                           coords_new3[i][1], coords_new3[i][2],cols_after_coords[i]))
         if i+1 in ter_list:
-            newPDB_file.write(ter_row[j]+'\n')
+            newPDB_file.write('TER\n')
             j+=1 
 
     if total_atom not in ter_list:
        newPDB_file.write('TER\n')
 
     print 'The coordinates of three dummy atoms were appended in the end.'
-    pb_resid = max(resid) + 1
-    pb_atom_id = max(atom_id) + 1    
+    pb_resid = resNumber_list[i] + 1
+    pb_atom_id = i + 2    
  
     newPDB_file.write('%s%5s%4s%2s%3s%2s%4s%s\n'%('ATOM  ',pb_atom_id, 'Pb','','DUM', '', pb_resid,'       0.000   0.000  -6.000  1.00  0.00')) 
     newPDB_file.write('TER\n')
@@ -279,7 +280,6 @@ if (flag == 1):
     newPDB_file.write('END\n')
     print 'A new pdb file, align_z.pdb has been generated.'
 
-f_in.close()
 newPDB_file.close() 
 
 

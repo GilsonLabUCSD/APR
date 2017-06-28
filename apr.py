@@ -436,13 +436,13 @@ class APR:
                 if method == 'attachment':
                     shutil.copyfile('align_z.pdb', 'vac.pdb')
                 if method == 'release':
-                    apr_translate.setup_translate(self.trans_dist[-1], self.lig_resid, self.lig_resname)
+                    apr_translate.setup_translate(self.trans_dist[-1], self.lig_residue)
 
             # Set up windows to pull the guest away from the host
             if method == 'translation':
                 rest_weight = 100.0
                 scale_w = 1.0
-                apr_translate.setup_translate(self.trans_dist[window], self.lig_resid, self.lig_resname)
+                apr_translate.setup_translate(self.trans_dist[window], self.lig_residue)
 
             # Add the correct number of waters 
             apr_solvate.setup_solvate(self.warning, self.water_model, self.waters, self.ions, self.amber16)
@@ -512,7 +512,7 @@ class APR:
             # Return to the root directory
             os.chdir('../../')
 
-    def checkfile(self, stage):
+    def check_rstfiles(self, stage):
         """
         Check whether the equilibration phase has been finished in all windows.
         """
@@ -863,7 +863,7 @@ class APR:
 
         if self.perturb == 'yes':
             print 'The Original GAFF parameters have been perturbed. Pleace check the parmed.log file'
-            print 'in each umbrella sampling window to make sure the parameters were perturbed as intended.\n' 
+            print 'in local umbrella sampling window to make sure the parameters were perturbed as intended.\n' 
 
         print ('You can use Ctrl+C to quit the program.\n')
 
@@ -882,7 +882,7 @@ class APR:
                         sys.exit(1)
         tleap_in.close() 
         # find out the serial numbers of ligand atoms based on the user input 
-        self.lig_resid, self.lig_resname = select_ligand_atoms(self.lig_name) 
+        self.lig_residue = select_ligand_atoms(self.lig_name) 
 
         self.prepare_and_simulate('attachment')
         self.prepare_and_simulate('translation')
@@ -1009,31 +1009,28 @@ def check_eq_outputs(output):
 
 def select_ligand_atoms(lig_str):
 
-    resid_list = []
-    resname_list = []
+    residue_list = []
 
     lig_str = lig_str.strip(':, ')
     lig_str = filter(None,lig_str.split(','))
  
-    for str in lig_str:
-        if RepresentsInt(str):
-            resid_list.append(int(str))
-        elif '-' in str:
-            substr = str.split('-')
-            if RepresentsInt(substr[0].strip()) and RepresentsInt(substr[0].strip()):
-                for i in range(int(substr[0]), int(substr[1])+1):
-                    resid_list.append(i)   
+    for elem in lig_str:
+        if '-' in elem:
+            substr = elem.split('-')
+            for i in range(isInt(substr[0]), isInt(substr[1])+1):
+                residue_list.append(str(i))   
         else:
-            resname_list.append(str.strip())          
+            residue_list.append(elem.strip())          
 
-    return resid_list, resname_list
+    return residue_list
 
-def RepresentsInt(val):
+def isInt(val):
     try: 
         int(val)
-        return True
+        return int(val)
     except ValueError:
-        return False
+        print 'Aborted! Wrong input for residue numbers: ', val
+        sys.exit(1)
 
 def ismyinstance(variable_type, parameter_value, filename, parameter):
     """
@@ -1121,7 +1118,7 @@ def help_message():
 
 def check_versions():
     """
-    Check the versions of python and openmm
+    Check the version of python 
     """
     print 'Checking the version of Python installed ...'
     if sys.version_info[0]==2 and sys.version_info[1] == 7:
@@ -1154,14 +1151,14 @@ def main():
         # Production runs
         this.process_input_file()
         this.check_executable()
-        this.checkfile('production')
+        this.check_rstfiles('production')
         this.run_production()
         print('Done!')
         print('Now you can issue the command python2 apr.py analysis -i apr.in to analyze your data.')
 
     elif this.action1 == 'analysis':
         this.process_input_file()
-        this.checkfile('analysis')
+        this.check_rstfiles('analysis')
         this.run_analysis()
 
         
