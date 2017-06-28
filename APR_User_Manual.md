@@ -2,13 +2,13 @@
 
 # Contributors to the current code #
 
-    __Niel M. Henriksen__
-    __Jian (Jane) Yin__
-    __David R. Slochower__
+    Niel M. Henriksen
+    Jian (Jane) Yin
+    David R. Slochower
 
 and the project leader:
 
-    __Michael K. Gilson__ 
+    Michael K. Gilson 
 
 
 # AcKnowledgements #
@@ -22,14 +22,14 @@ Air Force Office of Scientific Research (AFOSR) Basic Research Initiative (BRI) 
 Please use the following papers when citing APR method or scripts:
 
 Henriksen NM, Fenley AT, Gilson MK. Computational Calorimetry: High-Precision Calculation of Host-Guest Binding Thermodynamics. 
-J. Chem. Theory Comput., 2015, 11(9), 4377-4394. http://pubs.acs.org/doi/abs/10.1021/acs.jctc.5b00405
+J. Chem. Theory Comput., 2015, 11(9), 4377-4394. http://pubs.acs.org/doi/abs/10.1021/acs.jctc.5b00405.
 
 Yin, J, Henriksen, NM, Slochower, DR, Gilson, MK. The SAMPL5 Host-Guest Challenge: 
 Computing Binding Free Energies and Enthalpies from Explicit Solvent Simulations by the Attach-Pull-Release (APR) Method 
-J. Comput. Aided Mol. Des., 2016. http://link.springer.com/article/10.1007/s10822-016-9970-8
+J. Comput. Aided Mol. Des., 2016. http://link.springer.com/article/10.1007/s10822-016-9970-8.
 
 Velez-Vega C, Gilson MK. Overcoming Dissipation in the Calculation of Standard Binding Free Energies by Ligand Extraction. 
-J. Comput. Chem., 2013, 34(27), 2360-2371. http://onlinelibrary.wiley.com/doi/10.1002/jcc.23398/full
+J. Comput. Chem., 2013, 34(27), 2360-2371. http://onlinelibrary.wiley.com/doi/10.1002/jcc.23398/full.
 
 
 # Introduction #
@@ -37,7 +37,7 @@ J. Comput. Chem., 2013, 34(27), 2360-2371. http://onlinelibrary.wiley.com/doi/10
 The APR (attach-pull-release) protocols have been used to generate moderate to strong correlations between experimental and computational binding thermodynamics based on 
 a broad testing of host-guest systems including cucurbit[7]uril (CB7), β-cyclodextrin (β-CD), octa acid (OA) and tetra-endo-methyl octa-acid (TEMOA) with guest molecules. 
 For the detailed theoretical framework, methodology, and validation of APR approach, please refer to the publications listed aboved and a tutorial for Amber users:
-http://Ambermd.org/tutorials/advanced/tutorial29/
+http://ambermd.org/tutorials/advanced/tutorial29/.
 
 The current version of APR scripts is still a demonstration of how to use the pulling approach to compute binding thermodynamics. You can use it on host-guest complexes 
 with a minimal effort of setting up your workflow. 
@@ -58,7 +58,7 @@ for the system along the way. Equilibration, simulation, and data analysis are a
 
 ## Installation ##
 The APR scripts were written in Python language. To execute them, you need Python version 2.7 installed on your machine. If you don't have access to Python 2.7, 
-consider using the miniconda distribution which can be installed optionally in Amber16. You can invoke this Python version with $AmberHOME/miniconda/bin/python. 
+consider using the miniconda distribution which can be installed optionally in Amber16. You can invoke this Python version with $AMBERHOME/miniconda/bin/python. 
 Another alternative is to install Python 2.7 through Anaconda (https://www.continuum.io/downloads).
 
 To use APR scripts for binding calcultions, work stations that enable GPU acceleration of Amber are highly recommended. Please remember to set the environment variable 
@@ -69,7 +69,7 @@ but it will take much longer.
 The current APR scripts do not include a built-in docking program. Therefore, a PDB file of the bound struture needs to be provided with all the water and counterions removed,
 since those will be added within the APR workflow later on. For small molecules,
 mol2 files and possibly frcmod files are required. Those files need to be saved in the ./APR/setup/pdb and ./APR/setup/parameter_files directories, accordingly. They should also be indicated
-in ./APR/setup/input_files/tleap.in.Amber16 if using Amber16, and ./APR/setup/input_files/tleap.in.Amber14, if using Amber14. The Amber topology (.prmtop) and coordinate (.inpcrd)
+in ./APR/setup/input_files/tleap.in.amber16 if using Amber16, and ./APR/setup/input_files/tleap.in.amber14, if using Amber14. The Amber topology (.prmtop) and coordinate (.inpcrd)
 files will be generated in the workflow.
 
 ## Atom and residue selections ##
@@ -88,7 +88,7 @@ APR is a pulling approach. To pull the ligand out along a straight line, alignin
 currently provide a stand-alone script called zalign.py to help the users with this task. The usage of zalign is introduced by issuing the command python zalign.py.
 Alternatively, a series of molecular visualization programs such as VMD and Chimera can be used for system alignment.
 
-It is also noteworthy that the residue numbers in the PDB file are subject to change after alignment. The reason is that the tleap program in Amber re-number the residues if they do not start at "1".
+It is also noteworthy that the residue numbers in the PDB file are subject to change after alignment. The reason is that the tleap program in Amber re-numbers residues if they do not start at "1".
 Zalign adopts the same numbering convention used in tleap to keep things consistent. The residue numbers in align_z.pdb (output from zalign.py) should be used for selecting atoms to impose restraints, rather than
 those in the original PDB file, if they are not the same.       
      
@@ -98,7 +98,7 @@ Imposing restraints is crucial for performing binding calculations with the APR 
 of the system (For more details see Henriksen NM, Fenley AT, Gilson MK. J. Chem. Theory Comput., 2015, 11(9), 4377-4394).
 Anchor particles,i.e. dummy atoms come in handy for setting up restraints. In APR version 1.1, three dummy atoms are appended to the end of the output file
 generated by zalign.py (align_z.pdb). These dummy atoms were assigned by an atom name of "Pb" and a residue name of "DUM", but they have no charge or volume, yet an atomic mass of 220 Da. 
-The coordinates of the dummy atoms were hand-coded at this moment, but they can be manually changed quite easily in align_z.pdb according to user preference.    
+The coordinates of the dummy atoms were hand-coded at this moment, but they can be directly modified in align_z.pdb to adapt to the need of each unique system.    
 
 ## Command lines ##
 APR was designed as a three-step program, which carries out the tasks of running equilibration, production and conducting analysis in sequence. To start the program,
@@ -108,7 +108,7 @@ you need to first indicate which step you would like to run with the correspondi
     prod          Run the production phase
     analysis      Run the analysis and print the final results
 
-Meanwhile, two restarting modes, "overwrite" and "continue",  are available for the eq and prod steps. The overwrite mode should be used whenever any setting in the APR input file 
+Meanwhile, two restarting modes, "overwrite" and "continue",  are available for the "eq" and "prod" steps. The overwrite mode should be used whenever any setting in the APR input file 
 (see below) has been changed, or when the tleap.in, PDB or mol2 files have been added, replaced or modified. It will discard
 previous equilibration (if used with eq) or simulation results (if used with prod) and start freshly from the first umbrella sampling window. In constrast, the "continue" mode will 
 pick up from where the equilibration or production stops. Restarting modes are indicated with the "-s" flag. Both "continue" and "overwrite" can be used for the first time run. 
@@ -121,12 +121,12 @@ Examples of the command lines are:
 
 
 ## Test case ##
-The input and parameters files for an example system -- octa acid and its guest 4-cyanobenzoic acid were saved within the setup folder in the package. Those should be either modified or replaced 
-when computing the bind free energy for your own system. The template user input file apr.in was also written according to this system.    
+The input and parameters files for an example system -- octa acid and its guest 4-cyanobenzoic acid were saved within the setup folder in the APR package. Those should be either modified or replaced 
+when computing the bind free energy for your own system. The template user input file apr.in was also written according to this test case.    
 
 
 ## How to write an APR input file ##
-The APR input file can be named by the users and should be indicated by the flag "-i" in the command line. A template of the APR input file, apr.in, is available in the package.
+The APR input file can be named by the users and should be indicated by the flag "-i" in the command line. A template of the APR input file, apr.in, is available in the APR package.
 Comments starting with a semicolon in this file will not be parsed. The values of the options are case sensitive (except for YES, NO, ON and OFF) while the options themselves are not. 
 Not providing options or simply leaving the values blank may not cause abortion of the program, but it will likely cause unexpected consequences. Therefore, it is strongly recommended to specify
 all the listed options as instructed in the template file. Options and values are seperated with an equal sign ("="). The spaces before and after the equal sign are not mandatory.
