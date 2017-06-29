@@ -61,7 +61,7 @@ Another alternative is to install Python 2.7 through Anaconda (https://www.conti
 
 Work stations that enable GPU acceleration of Amber are also highly recommended for running APR scripts. Please remember to set the environment variable 
 "CUDA_VISIBLE_DEVICES" to prevent multiple simulations from running on a single GPU. It is possible to run the tutorial with pmemd.MPI, pmemd, and even sander, 
-but it will take significantly longer to finish the calculations.
+but it can take much longer to finish the calculations.
 
 ## Topology and coordinate Files ##
 The current APR scripts do not include a built-in docking program. Therefore, a PDB file of the bound structure needs to be provided with all the water molecules and counterions removed,
