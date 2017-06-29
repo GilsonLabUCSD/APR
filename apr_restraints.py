@@ -30,17 +30,17 @@ def setup_restraints(prefix, trans_dist, rest_weight, scale_w, R1, R2, R3, L1, L
     """
     print('Adding restraints ...')
     # Get the atom serial numbers of the receptor, ligand and dummy atoms for imposing restraints.
-    idx_r1 = find_index(R1, 'vac.pdb','atom')
-    idx_r2 = find_index(R2, 'vac.pdb','atom')
-    idx_r3 = find_index(R3, 'vac.pdb','atom')
-    idx_l1 = find_index(L1, 'vac.pdb','atom')
-    idx_l2 = find_index(L2, 'vac.pdb','atom')
-    idx_d1 = find_index(':DUM@Pb','vac.pdb','atom')
+    idx_r1 = find_index(R1, 'solvated.pdb','atom')
+    idx_r2 = find_index(R2, 'solvated.pdb','atom')
+    idx_r3 = find_index(R3, 'solvated.pdb','atom')
+    idx_l1 = find_index(L1, 'solvated.pdb','atom')
+    idx_l2 = find_index(L2, 'solvated.pdb','atom')
+    idx_d1 = find_index(':DUM@Pb','solvated.pdb','atom')
     idx_d2 = str(int(idx_d1) + 1)
     idx_d3 = str(int(idx_d2) + 1)
 
     # Get the residue serial numbers of the dummy atoms
-    d1_resid = find_index(':DUM@Pb','vac.pdb','residue')
+    d1_resid = find_index(':DUM@Pb','solvated.pdb','residue')
     d2_resid = str(int(d1_resid) + 1)
     d3_resid = str(int(d2_resid) + 1)     
 
@@ -208,10 +208,7 @@ def return_restraints_for_error_analysis(prefix, trans_dist, R1, R2, R3, L1, L2,
 
 def find_index(usr_input, pdbfile, option):
     """
-    Find the atom index of an atom in a PDB file.
-    :param name: atom name (in PDB file)
-    :param resname: atom resname (in PDB file)
-    :return:
+    Find the atom or residue number in a PDB file.
     """
     atom = usr_input.split('@')[1]
     residue = usr_input.split('@')[0][1:]
