@@ -332,7 +332,7 @@ may not always be achieved, whereas the maximum number of iterations is still fi
 * When using the HMR and perturb features, checking the parmed.log file is a good way to make sure that the parameters are perturbed as intended.
 
 * Of course, the most safe approach to make sure everything works as intended is to visually inspect the restart files and trajectories. The configurations of your system will
-imply whether the alignment, dummy atoms, solvation, translation and restraints are all set up and done correctly.     
+imply whether the alignment, dummy atoms, solvation, translation and restraints are all set up or done correctly.     
 
    
    
