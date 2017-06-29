@@ -39,10 +39,8 @@ a broad testing of host-guest systems including cucurbit[7]uril (CB7), β-cyclod
 For the detailed methodology and validation of APR approach, please refer to the publications listed aboved and a tutorial for Amber users:
 http://ambermd.org/tutorials/advanced/tutorial29/.
 
-The current version of APR scripts (v1.1) is a demonstration of how to use pulling approach to compute binding thermodynamics. You can apply it on host-guest complexes 
-with a minimal effort of setting up your workflow. 
- 
-If you are planning on computing the binding affinities of protein-ligand systems, please be aware that careful adjustments of the protocols and scripts will be needed, 
+The current version of APR scripts (v1.1) is a demonstration of how to use pulling approach to compute binding thermodynamics. You can apply it on most host-guest complexes 
+with a minimal effort of setting up your workflow. If you are planning on computing the binding affinities of protein-ligand systems, please be aware that careful adjustments of the protocols and scripts will be needed, 
 based on the requirements of every particular system. In addition, be extremely cautious about using the APR approach to compute binding affinities for proteins with 
 buried binding sites, as those may present convergence issues due to the significant conformational change of the protein during the pulling process. A recent advance of 
 APR applications on protein systems can be found here: http://pubs.acs.org/doi/abs/10.1021/acs.jctc.7b00275.
@@ -323,8 +321,8 @@ vac.prmtop (topology in the gas phase) should be used for parsing the trajectori
 
 * If necessary, more pmemd/sander options can be modified directly in the apr_mdin.py file. 
 
-* A lot of errors you may encounter when first setting the APR workflow have something to do with parameterization and solvlation steps. Usually checking the tleap log files
-vac_tleap.log and solvate_tleap.log will provide you hints about the causes of errors, as what you would normally do for trouble shooting tleap/Amber errors.  
+* Errors you encounter when first setting the APR workflow may have something to do with parameterization and solvlation steps. Usually checking the tleap log files
+vac_tleap.log and solvate_tleap.log will provide you hints about the causes of errors, as what you would normally do when troubleshooting tleap/Amber errors.  
 
 * It is safe to ignore the error messages such as "traj.0X matches no files" in the restraints.log file. The cause of those error messages is that the specified number of iterations
 may not always be achieved, whereas the maximum number of iterations is still fixed as 20.  
