@@ -29,8 +29,8 @@ def align_exception():
   print '    -cutoff: cutoff value for generating the final structure. Using'
   print '     a larger cutoff value (in Angstrom) will generate alignment with'
   print '     higher precision, but will of course takes more time to search.\n'
-  print 'For example: python zalign.py -f pdb/oa_cba.pdb -a1 :OCT@O13 -a2 :OCT@O14'
-  print '             -a3 :OCT@O17 -a4 :OCT@O11 -r 85 -cutoff 0.05 -c :MOL@N1'
+  print 'For example: python zalign.py -f pdb/oa_cba.pdb -a1 :OCT@O3 -a2 :OCT@O7'
+  print '             -a3 :OCT@O8 -a4 :OCT@O11 -r 85 -cutoff 0.05 -c :MOL@N1'
   print '***********************************************************************'
   return
 
