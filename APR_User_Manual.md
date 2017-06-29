@@ -327,12 +327,12 @@ vac_tleap.log and solvate_tleap.log will provide you hints about the causes of e
 * It is safe to ignore the error messages such as "traj.0X matches no files" in the restraints.log file. The cause of those error messages is that the specified number of iterations
 may not always be achieved, whereas the maximum number of iterations is still fixed as 20.  
 
-* The disang.rest file stores all essential information about how the restraints are set up. 
+* The disang.rest file stores all essential information about how the restraints are set up in each window. 
 
 * When using the HMR and perturb features, checking the parmed.log file is a good way to make sure that the parameters are perturbed as intended.
 
 * Of course, the most safe approach to make sure everything works as intended is to visually inspect the restart files and trajectories. The configurations of your system will
-imply whether the alignment, dummy atoms, solvation, translation and restraints were all done and set up correctly.     
+imply whether the alignment, dummy atoms, solvation, translation and restraints are all set up and done correctly.     
 
    
    
