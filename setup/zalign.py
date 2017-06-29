@@ -76,9 +76,11 @@ def find_index(usr_input, PDBEntries):
     residue = usr_input.split('@')[0][1:]
 
     flag = 0 
+    count = 0
 
     for i in range(0, len(PDBEntries)):
         if PDBEntries[i][0:6].strip() == 'ATOM' or PDBEntries[i][0:6].strip() == 'HETATM':
+            count += 1
             if (PDBEntries[i][17:20].strip() == residue or PDBEntries[i][22:26].strip() == residue) and PDBEntries[i][12:16].strip() == atom:
                 flag = 1
                 break
@@ -87,7 +89,7 @@ def find_index(usr_input, PDBEntries):
         print ('%s cannot be found.'%(usr_input))
         sys.exit()    
 
-    return i
+    return count-1
 
 
 # Check if a file exists
@@ -214,12 +216,12 @@ for i in range (360):
             tmp2 = coords_new[num2][1]
             tmp3 = (-1)*math.sin(dy)*coords_new[num2][0] + math.cos(dy)*coords_new[num2][2]
             coords_new2.append((tmp1,tmp2,tmp3))
-        average = (float(coords_new2[idx1-1][2]) + float(coords_new2[idx2-1][2]) + float(coords_new2[idx3-1][2]))/3.0
+        average = (float(coords_new2[idx1][2]) + float(coords_new2[idx2][2]) + float(coords_new2[idx3][2]))/3.0
 
-        diff1 = float(coords_new2[idx1-1][2])-average
-        diff2 = float(coords_new2[idx2-1][2])-average
-        diff3 = float(coords_new2[idx3-1][2])-average
-        if (abs(diff1) < cutoff)and(abs(diff2)<cutoff)and(abs(diff3)<cutoff)and(float(coords_new2[idx4-1][2])<average):
+        diff1 = float(coords_new2[idx1][2])-average
+        diff2 = float(coords_new2[idx2][2])-average
+        diff3 = float(coords_new2[idx3][2])-average
+        if (abs(diff1) < cutoff)and(abs(diff2)<cutoff)and(abs(diff3)<cutoff)and(float(coords_new2[idx4][2])<average):
             flag = 1
             print '\n'
             print 'Solution found.'
@@ -238,9 +240,9 @@ if flag == 0:
 # Translate the coordinates according to the new origin
 coords_new = []
 for i in range(0, total_atom):
-    tmpx = float(coords_new2[i][0]) - float(coords_new2[idx_origin-1][0])
-    tmpy = float(coords_new2[i][1]) - float(coords_new2[idx_origin-1][1])
-    tmpz = float(coords_new2[i][2]) - float(coords_new2[idx_origin-1][2])
+    tmpx = float(coords_new2[i][0]) - float(coords_new2[idx_origin][0])
+    tmpy = float(coords_new2[i][1]) - float(coords_new2[idx_origin][1])
+    tmpz = float(coords_new2[i][2]) - float(coords_new2[idx_origin][2])
     coords_new.append((tmpx, tmpy, tmpz))
 
 # Rotate around the z axis
