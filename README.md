@@ -1,8 +1,8 @@
 # APR(attach-pull-release): a binding calculation approach
 
 The current version of APR scripts (v1.1) is a demonstration of how to use the pulling approach to compute binding thermodynamics. 
-You can apply it on most host-guest complexes with a minimal effort of setting up your system. However, the application of APR on 
-protein systems is still under development. If you are planning on computing the binding affinities for proteins, please be aware that
+You can apply it on most host-guest complexes with a minimal effort of setting up your system. 
+If you are planning on computing the binding affinities for proteins, please be aware that
 careful adjustments of the protocols and scripts will be needed, based on the requirements of every particular system. In addition,
 be extremely cautious about using the APR approach to compute binding affinities for proteins with buried binding sites, as those
 may present convergence issues due to the significant conformational change of the protein during the pulling process.     
