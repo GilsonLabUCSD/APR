@@ -10,7 +10,7 @@ import sys as sys
 
 
 def setup_restraints(prefix, trans_dist, rest_weight, scale_w, R1, R2, R3, L1, L2, dist_fc,
-                     angle_fc, jacks_fc, jacks_dist, jacks_list, strip):
+                     angle_fc, jacks_fc, jacks_dist, jacks_list, strip, d1_resid):
     """
     Add restraints between host and guest atoms.
     :param prefix: whether 'a'ttach or 'p'nattach restraints.
@@ -30,17 +30,16 @@ def setup_restraints(prefix, trans_dist, rest_weight, scale_w, R1, R2, R3, L1, L
     """
     print('Adding restraints ...')
     # Get the atom serial numbers of the receptor, ligand and dummy atoms for imposing restraints.
-    idx_r1 = find_index(R1, 'solvated.pdb','atom')
-    idx_r2 = find_index(R2, 'solvated.pdb','atom')
-    idx_r3 = find_index(R3, 'solvated.pdb','atom')
-    idx_l1 = find_index(L1, 'solvated.pdb','atom')
-    idx_l2 = find_index(L2, 'solvated.pdb','atom')
-    idx_d1 = find_index(':DUM@Pb','solvated.pdb','atom')
+    idx_r1 = find_index(R1, 'dry.pdb')
+    idx_r2 = find_index(R2, 'dry.pdb')
+    idx_r3 = find_index(R3, 'dry.pdb')
+    idx_l1 = find_index(L1, 'dry.pdb')
+    idx_l2 = find_index(L2, 'dry.pdb')
+    idx_d1 = find_index(':DUM@Pb','dry.pdb')
     idx_d2 = str(int(idx_d1) + 1)
     idx_d3 = str(int(idx_d2) + 1)
 
     # Get the residue serial numbers of the dummy atoms
-    d1_resid = find_index(':DUM@Pb','solvated.pdb','residue')
     d2_resid = str(int(d1_resid) + 1)
     d3_resid = str(int(d2_resid) + 1)     
 
@@ -206,9 +205,9 @@ def return_restraints_for_error_analysis(prefix, trans_dist, R1, R2, R3, L1, L2,
             # Hopefully len(jacks_list) / 2 is an integer, otherwise the error analysis code will have trouble looping.
             return reference_values[7], dwt, 180.0, awt, jacks_dist, jwt, len(jacks_list) / 2
 
-def find_index(usr_input, pdbfile, option):
+def find_index(usr_input, pdbfile):
     """
-    Find the atom or residue number in a PDB file.
+    Find the atom number in a PDB file.
     """
     atom = usr_input.split('@')[1]
     residue = usr_input.split('@')[0][1:]
@@ -227,7 +226,4 @@ def find_index(usr_input, pdbfile, option):
     if not flag :
         print ('%s cannot be found.'%(usr_input))
         sys.exit()    
-    if option == 'atom':
-        return line[6:11].strip()
-    elif option == 'residue':
-        return line[22:26].strip()
+    return line[6:11].strip()
