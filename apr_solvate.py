@@ -25,6 +25,7 @@ def setup_solvate(warning, water_model, waters, ion_list, isAmber16):
     vac_in_file = open('vac_tleap.in', 'a')
     vac_in_file.write('check model\n')
     vac_in_file.write('saveamberparm model vac.prmtop vac.inpcrd\n')
+    vac_in_file.write('savepdb model dry.pdb\n')
     vac_in_file.write('quit\n')
     vac_in_file.close()
 
