@@ -271,7 +271,7 @@ if (flag == 1):
 
     print 'The coordinates of three dummy atoms were appended in the end.'
     pb_resid = resNumber_list[i] + 1
-    pb_atom_id = i + 2    
+    pb_atom_id = int(cols_before_resNumber[i][6:11].strip()) + 1    
  
     newPDB_file.write('%s%5s%4s%2s%3s%2s%4s%s\n'%('ATOM  ',pb_atom_id, 'Pb','','DUM', '', pb_resid,'       0.000   0.000  -6.000  1.00  0.00')) 
     newPDB_file.write('TER\n')
