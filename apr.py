@@ -298,30 +298,18 @@ class APR:
         self.ions = [[neu_cation, 0], [neu_anion, 0], [extra_cation, num_cations], [extra_anion, num_anions]]
 
         if not os.path.exists('setup/align_z.pdb'):
-            print('Aborted! align_z.pdb cannot be found in the setup folder. Please use zalign.py to generate it first.\n')
+            print('\nAborted! align_z.pdb cannot be found in the setup folder. Please use zalign.py to generate it first.\n')
             sys.exit(1)            
-
-        # Find the total number of solute atoms and the residue serial number of the first dummy atom:
-        f =  open('setup/align_z.pdb','r') 
-        for line in f:
-            if line[0:6].strip() == 'ATOM' or line[0:6].strip() == 'HETATM':
-                self.solute_atoms += 1
-        f.seek(0,0)
-        for line in f:
-            if  line[17:20].strip() == 'DUM':
-                self.dum_resid = int(line[22:26].strip())   
-                break
-        f.close()
-      
-        if self.dum_resid == 99999:
-            print 'Dummy atoms were not detected in align_z.pdb.\n'
 
         if self.perturb == 'yes':
             if not os.path.exists('setup/param_files/new_params.dat'):
-                print('Aborted! new_params.dat cannot be found in the setup/param_files folder.')
+                print('\nAborted! new_params.dat cannot be found in the setup/param_files folder.')
                 print ('Please provide new parameters for perturbation, or switch the perturb option from yes to no in the APR input.\n')
                 sys.exit(1)
-
+        
+        if self.maxcycle > 20:
+            print('\nAborted! Please assign a value equal to or smaller than 20 for the maxcycle option.\n')
+            sys.exit(1)
 
     def make_files_and_directories(self, method):
         """
@@ -447,21 +435,41 @@ class APR:
             # Add the correct number of waters 
             apr_solvate.setup_solvate(self.warning, self.water_model, self.waters, self.ions, self.amber16)
 
+            # Find the total number of solute atoms and the residue serial number of the first dummy atom:
+            f =  open('dry.pdb','r')
+            for line in f:
+                if line[0:6].strip() == 'ATOM' or line[0:6].strip() == 'HETATM':
+                    self.solute_atoms += 1
+            f.seek(0,0)
+
+            dum_flag = 0
+
+            for line in f:
+                if  line[17:20].strip() == 'DUM':
+                    self.dum_resid = int(line[22:26].strip())
+                    dum_flag = 1
+                    break
+            f.close()
+
+            if dum_flag == 0:
+                print 'Dummy atoms (residue name: DUM) were not detected in the PDB file.\n'
+                sys.exit(1)
+
             # Add restraints to keep the guest at the target distances
             if 'no' in self.jacks.lower():
                 self.jacks_fc = 0
 
             if method == 'attachment':
                 apr_restraints.setup_restraints(prefix, 0.0, rest_weight, scale_w, self.R1, self.R2, self.R3, self.L1, self.L2,
-                                 self.dist_fc, self.angle_fc, self.jacks_fc, self.jacks_dist, self.jacks_list, self.strip)
+                                 self.dist_fc, self.angle_fc, self.jacks_fc, self.jacks_dist, self.jacks_list, self.strip, self.dum_resid)
             if method == 'translation':
                 apr_restraints.setup_restraints(prefix, self.trans_dist[window], rest_weight, scale_w, self.R1,
                                  self.R2, self.R3, self.L1, self.L2, self.dist_fc,
-                                 self.angle_fc, self.jacks_fc, self.jacks_dist, self.jacks_list, self.strip)
+                                 self.angle_fc, self.jacks_fc, self.jacks_dist, self.jacks_list, self.strip, self.dum_resid)
             if method == 'release':
                 apr_restraints.setup_restraints(prefix, self.trans_dist[-1], rest_weight, scale_w, self.R1,
                                  self.R2, self.R3, self.L1, self.L2, self.dist_fc,
-                                 self.angle_fc, self.jacks_fc, self.jacks_dist, self.jacks_list, self.strip)
+                                 self.angle_fc, self.jacks_fc, self.jacks_dist, self.jacks_list, self.strip, self.dum_resid)
 
             sys.stdout.flush()
            
