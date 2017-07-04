@@ -436,10 +436,11 @@ class APR:
             apr_solvate.setup_solvate(self.warning, self.water_model, self.waters, self.ions, self.amber16)
 
             # Find the total number of solute atoms and the residue serial number of the first dummy atom:
+            solute_atoms = 0
             f =  open('dry.pdb','r')
             for line in f:
                 if line[0:6].strip() == 'ATOM' or line[0:6].strip() == 'HETATM':
-                    self.solute_atoms += 1
+                    solute_atoms += 1
             f.seek(0,0)
 
             dum_flag = 0
@@ -454,6 +455,8 @@ class APR:
             if dum_flag == 0:
                 print 'Dummy atoms (residue name: DUM) were not detected in the PDB file.\n'
                 sys.exit(1)
+
+            self.solute_atoms = solute_atoms
 
             # Add restraints to keep the guest at the target distances
             if 'no' in self.jacks.lower():
