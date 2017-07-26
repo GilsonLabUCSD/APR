@@ -1,7 +1,7 @@
 ; APR input file
 
 ; AMBER settings
-Amber16  = NO              ; Use Amber 16 or older Amber versions (YES/NO)
+Amber16  = YES             ; Use Amber 16 or older Amber versions (YES/NO)
 hmr =  YES                 ; Use hydrogen mass repartitioning (YES/NO); remember to use a relatively large stepsize (eq_dt and dt)
 exe_path = 'pmemd.cuda'    ; Other avaiable options include: 'mpirun -np 12 pmemd.MPI', 'pmemd', 'sander'... 
 temperature  = 298.15      ; For MD simulations and TI analysis (in Kelvin) 
