@@ -9,7 +9,7 @@ import subprocess as sp
 import sys as sys
 
 
-def setup_restraints(prefix, trans_dist, rest_weight, scale_w, R1, R2, R3, L1, L2, dist_fc,
+def setup_restraints(prefix, trans_dist, rest_weight, scale_w, H1, H2, H3, G1, G2, dist_fc,
                      angle_fc, jacks_fc, jacks_dist, jacks_list, strip, d1_resid):
     """
     Add restraints between host and guest atoms.
@@ -17,11 +17,11 @@ def setup_restraints(prefix, trans_dist, rest_weight, scale_w, R1, R2, R3, L1, L
     :param trans_dist: the distance between the host and guest (may be zero)
     :param rest_weight: the weight of the restraint, set up to scale for the attachment phase
     :param scale_w
-    :param R1: receptor atom 1
-    :param R2: receptor atom 2
-    :param R3: receptor atom 3
-    :param L1: ligand atom 1
-    :param L2: ligand atom 2
+    :param H1: host atom 1
+    :param H2: host atom 2
+    :param H3: host atom 3
+    :param G1: guest atom 1
+    :param G2: guest atom 2
     :param dist_fc: force constant for the distance restraints
     :param angle_fc: force constant for the angle restraints
                       the target value should be in degrees but the restraint should be in radians (because AMBER)
@@ -29,12 +29,12 @@ def setup_restraints(prefix, trans_dist, rest_weight, scale_w, R1, R2, R3, L1, L
     :return:
     """
     print('Adding restraints ...')
-    # Get the atom serial numbers of the receptor, ligand and dummy atoms for imposing restraints.
-    idx_r1 = find_index(R1, 'dry.pdb')
-    idx_r2 = find_index(R2, 'dry.pdb')
-    idx_r3 = find_index(R3, 'dry.pdb')
-    idx_l1 = find_index(L1, 'dry.pdb')
-    idx_l2 = find_index(L2, 'dry.pdb')
+    # Get the atom serial numbers of the host, guest and dummy atoms for imposing restraints.
+    idx_r1 = find_index(H1, 'dry.pdb')
+    idx_r2 = find_index(H2, 'dry.pdb')
+    idx_r3 = find_index(H3, 'dry.pdb')
+    idx_l1 = find_index(G1, 'dry.pdb')
+    idx_l2 = find_index(G2, 'dry.pdb')
     idx_d1 = find_index(':DUM@Pb','dry.pdb')
     idx_d2 = str(int(idx_d1) + 1)
     idx_d3 = str(int(idx_d2) + 1)
@@ -60,18 +60,18 @@ def setup_restraints(prefix, trans_dist, rest_weight, scale_w, R1, R2, R3, L1, L
 
     # Write the cpptraj input file that will print the reference values 
     pt_file = open('reference.in', 'w')
-    pt_file.write('#AnchorAtoms: %9s %9s %9s %9s %9s\n' % (R1, R2, R3, L1, L2))
+    pt_file.write('#AnchorAtoms: %9s %9s %9s %9s %9s\n' % (H1, H2, H3, G1, G2))
     pt_file.write('parm solvated.prmtop\n')
     pt_file.write('trajin solvated.inpcrd\n')
-    pt_file.write('distance r0 %9s %9s noimage out reference.dat\n' % (D1, R1))
-    pt_file.write('angle r1 %9s %9s %9s out reference.dat\n' % (D2, D1, R1))
-    pt_file.write('dihedral r2 %9s %9s %9s %9s out reference.dat\n' % (D3, D2, D1, R1))
-    pt_file.write('angle r3 %9s %9s %9s out reference.dat\n' % (D1, R1, R2))
-    pt_file.write('dihedral r4 %9s %9s %9s %9s out reference.dat\n' % (D2, D1, R1, R2))
-    pt_file.write('dihedral r5 %9s %9s %9s %9s out reference.dat\n' % (D1, R1, R2, R3))
-    pt_file.write('distance r6 %9s %9s noimage out reference.dat\n' % (D1, L1))
-    pt_file.write('angle r7 %9s %9s %9s out reference.dat\n' % (D2, D1, L1))
-    pt_file.write('angle r8 %9s %9s %9s out reference.dat\n' % (D1, L1, L2))
+    pt_file.write('distance r0 %9s %9s noimage out reference.dat\n' % (D1, H1))
+    pt_file.write('angle r1 %9s %9s %9s out reference.dat\n' % (D2, D1, H1))
+    pt_file.write('dihedral r2 %9s %9s %9s %9s out reference.dat\n' % (D3, D2, D1, H1))
+    pt_file.write('angle r3 %9s %9s %9s out reference.dat\n' % (D1, H1, H2))
+    pt_file.write('dihedral r4 %9s %9s %9s %9s out reference.dat\n' % (D2, D1, H1, H2))
+    pt_file.write('dihedral r5 %9s %9s %9s %9s out reference.dat\n' % (D1, H1, H2, H3))
+    pt_file.write('distance r6 %9s %9s noimage out reference.dat\n' % (D1, G1))
+    pt_file.write('angle r7 %9s %9s %9s out reference.dat\n' % (D2, D1, G1))
+    pt_file.write('angle r8 %9s %9s %9s out reference.dat\n' % (D1, G1, G2))
 
     pt_file.close()
     p = sp.call('cpptraj -i reference.in > reference.log', shell=True)
@@ -95,7 +95,7 @@ def setup_restraints(prefix, trans_dist, rest_weight, scale_w, R1, R2, R3, L1, L
     # Write those values into the disang.rest file
     rest_file = open('disang.rest', 'w')
     rest_file.write('#AnchorAtoms %9s %9s %9s %9s %9s #Type %s #Weight %s #TransDist %s #ScaleW %s\n' \
-                    % (R1, R2, R3, L1, L2, prefix, rest_weight, trans_dist, str(scale_w)))
+                    % (H1, H2, H3, G1, G2, prefix, rest_weight, trans_dist, str(scale_w)))
     # r0
     rest_file.write('&rst iat= %-10s' % (idx_d1+','+ idx_r1+','))
     rest_file.write('%16s= %10.4f, r2= %10.4f, r3= %10.4f, r4= %10.4f, rk2= %11.7f, rk3= %11.7f, ' % (
@@ -153,7 +153,7 @@ def setup_restraints(prefix, trans_dist, rest_weight, scale_w, R1, R2, R3, L1, L
 
     # Write restraints.in 
     pt2_file = open('restraints.in', 'w')
-    pt2_file.write('#AnchorAtoms: %9s %9s %9s %9s %9s\n' % (R1, R2, R3, L1, L2))
+    pt2_file.write('#AnchorAtoms: %9s %9s %9s %9s %9s\n' % (H1, H2, H3, G1, G2))
     pt2_file.write('noexitonerror\n')
     if strip == 'yes':
         pt2_file.write('parm vac.prmtop\n')
@@ -162,11 +162,11 @@ def setup_restraints(prefix, trans_dist, rest_weight, scale_w, R1, R2, R3, L1, L
     for i in range(1, 21):
         pt2_file.write('trajin traj.%02d\n' % (i))
 
-    pt2_file.write('distance d6 %9s %9s noimage out restraints.dat\n' % (D1, L1))
+    pt2_file.write('distance d6 %9s %9s noimage out restraints.dat\n' % (D1, G1))
     pt2_file.write('hist d6,0,30,0.05,* norm out hist.dat\n')
-    pt2_file.write('angle a7 %9s %9s %9s out restraints.dat\n' % (D2, D1, L1))
+    pt2_file.write('angle a7 %9s %9s %9s out restraints.dat\n' % (D2, D1, G1))
     pt2_file.write('hist a7,0,180,0.5,* norm out hist.dat\n')
-    pt2_file.write('angle a8 %9s %9s %9s out restraints.dat\n' % (D1, L1, L2))
+    pt2_file.write('angle a8 %9s %9s %9s out restraints.dat\n' % (D1, G1, G2))
     pt2_file.write('hist a8,0,180,0.5,* norm out hist.dat\n')
 
     # if conformational restraints are applied, write extra lines
@@ -177,7 +177,7 @@ def setup_restraints(prefix, trans_dist, rest_weight, scale_w, R1, R2, R3, L1, L
     pt2_file.close()
     return 
 
-def return_restraints_for_error_analysis(prefix, trans_dist, R1, R2, R3, L1, L2, dist_fc,
+def return_restraints_for_error_analysis(prefix, trans_dist, H1, H2, H3, G1, G2, dist_fc,
                      angle_fc, jacks_fc, jacks_dist, jacks_list, jacks):
         # Assume that theere is a reference.dat file already...
         dat_file = open('reference.dat', 'r')

@@ -1,7 +1,7 @@
 ; APR input file
 
 ; AMBER settings
-Amber16  = YES             ; Use Amber 16 or older Amber versions (YES/NO)
+Amber16  = NO              ; Use Amber 16 or older Amber versions (YES/NO)
 hmr =  YES                 ; Use hydrogen mass repartitioning (YES/NO); remember to use a relatively large stepsize (eq_dt and dt)
 exe_path = 'pmemd.cuda'    ; Other avaiable options include: 'mpirun -np 12 pmemd.MPI', 'pmemd', 'sander'... 
 temperature  = 298.15      ; For MD simulations and TI analysis (in Kelvin) 
@@ -34,11 +34,11 @@ number_anions   =  0      ;
 
 ; Specifying receptor and ligand atoms for setting up restraints
 lIG        = :MOL         ; Specify the residue name or the residue number of the ligand
-R1         = :OCT@C11
-R2         = :OCT@C23
-R3         = :OCT@C51
-L1         = :MOL@N1
-L2         = :MOL@C6
+H1         = :OCT@C11
+H2         = :OCT@C23
+H3         = :OCT@C51
+G1         = :MOL@N1
+G2         = :MOL@C6
 
 ; Variables for the NPT equilibration phase
 eq_dt          = 4       ; A step size of 4 fs 

@@ -216,24 +216,23 @@ This option is for the users to indicate all the atoms that belong to the ligand
 umbrella sampling window in order to pull the ligand out. Both residue names and residue sequence numbers with the Amber mask style are acceptable (e.g. :MOL :5). 
 Directly selecting atoms are currently not supported for this option.   
 
-### R1 \<an Amber-mask style string for atom selection> ### 
+### H1 \<an Amber-mask style string for atom selection> ### 
 One of the three receptor atoms selected for imposing restraints. Examples are: :OCT@C1, :1@N2. 
 
-R1, R2 and R3 (see below) should not lie in the same line, and they should locate at
+H1, H2 and H3 (see below) should not lie in the same line, and they should locate at
 relatively rigid regions of the receptor in order to maintain robust restraints.
 
-### R2 \<an Amber-mask style string for atom selection> ###
-One of the three receptor atoms selected for imposing receptor restraints. Also see R1.
+### H2 \<an Amber-mask style string for atom selection> ###
+One of the three receptor atoms selected for imposing receptor restraints. Also see H1.
 
-### R3 \<an Amber-mask style string for atom selection> ###
-One of the three receptor atoms selected for imposing receptor restraints. Also see R1.
+### H3 \<an Amber-mask style string for atom selection> ###
+One of the three receptor atoms selected for imposing receptor restraints. Also see H1.
 
-### L1 \<an Amber-mask style string for atom selection> ###
-One of the two ligand atoms selected for imposing ligand restraints. L1 is also the origin of the aligned structure in align_z.pdb. Given how the restraints are currently set up,
-L1 should locate between L2 (see below) and the dummy atoms. (For more detailed illustrations, see Figure S1 in Henriksen et al. http://pubs.acs.org/doi/suppl/10.1021/acs.jctc.5b00405.
-Note that notations for atoms are different.)
+### G1 \<an Amber-mask style string for atom selection> ###
+One of the two ligand atoms selected for imposing ligand restraints. G1 is also the origin of the aligned structure in align_z.pdb. Given how the restraints are currently set up,
+G1 should locate between G2 (see below) and the dummy atoms. (For more detailed illustrations, see Figure S1 in Henriksen et al. http://pubs.acs.org/doi/suppl/10.1021/acs.jctc.5b00405.)
 
-### L2 \<an Amber-mask style string for atom selection> ###
+### G2 \<an Amber-mask style string for atom selection> ###
 One of the two ligand atoms selected for imposing ligand restraints. 
 
 ### eq_dt \<int> ###

@@ -59,11 +59,11 @@ class APR:
         # Receptor and ligand atoms for the restraints (accept AMBER style mask)
         self.lig_name = 'None'
         self.dum_resid = 99999
-        self.R1 = ''
-        self.R2 = ''
-        self.R3 = ''
-        self.L1 = ''
-        self.L2 = ''
+        self.H1 = ''
+        self.H2 = ''
+        self.H3 = ''
+        self.G1 = ''
+        self.G2 = ''
         
         # Attributes for the production phase
         self.hmr = 'no'
@@ -235,15 +235,15 @@ class APR:
                 elif lines[i][0] == 'lig':
                     self.lig_name = ismyinstance('string', lines[i][1], self.input_file, lines[i][0])
                 elif lines[i][0] == 'r1':
-                    self.R1 = lines[i][1]
+                    self.H1 = lines[i][1]
                 elif lines[i][0] == 'r2':
-                    self.R2 = lines[i][1]
+                    self.H2 = lines[i][1]
                 elif lines[i][0] == 'r3':
-                    self.R3 = lines[i][1]
+                    self.H3 = lines[i][1]
                 elif lines[i][0] == 'l1':
-                    self.L1 = lines[i][1]
+                    self.G1 = lines[i][1]
                 elif lines[i][0] == 'l2':
-                    self.L2 = lines[i][1]
+                    self.G2 = lines[i][1]
                 elif lines[i][0] == 'maxcycle':
                     self.maxcycle = ismyinstance('int', lines[i][1], self.input_file, lines[i][0])
                 elif lines[i][0] == 'maxsem_attach':
@@ -463,15 +463,15 @@ class APR:
                 self.jacks_fc = 0
 
             if method == 'attachment':
-                apr_restraints.setup_restraints(prefix, 0.0, rest_weight, scale_w, self.R1, self.R2, self.R3, self.L1, self.L2,
+                apr_restraints.setup_restraints(prefix, 0.0, rest_weight, scale_w, self.H1, self.H2, self.H3, self.G1, self.G2,
                                  self.dist_fc, self.angle_fc, self.jacks_fc, self.jacks_dist, self.jacks_list, self.strip, self.dum_resid)
             if method == 'translation':
-                apr_restraints.setup_restraints(prefix, self.trans_dist[window], rest_weight, scale_w, self.R1,
-                                 self.R2, self.R3, self.L1, self.L2, self.dist_fc,
+                apr_restraints.setup_restraints(prefix, self.trans_dist[window], rest_weight, scale_w, self.H1,
+                                 self.H2, self.H3, self.G1, self.G2, self.dist_fc,
                                  self.angle_fc, self.jacks_fc, self.jacks_dist, self.jacks_list, self.strip, self.dum_resid)
             if method == 'release':
-                apr_restraints.setup_restraints(prefix, self.trans_dist[-1], rest_weight, scale_w, self.R1,
-                                 self.R2, self.R3, self.L1, self.L2, self.dist_fc,
+                apr_restraints.setup_restraints(prefix, self.trans_dist[-1], rest_weight, scale_w, self.H1,
+                                 self.H2, self.H3, self.G1, self.G2, self.dist_fc,
                                  self.angle_fc, self.jacks_fc, self.jacks_dist, self.jacks_list, self.strip, self.dum_resid)
 
             sys.stdout.flush()
@@ -641,20 +641,20 @@ class APR:
 
                 if method == 'attachment':
                     restraint_list = apr_restraints.return_restraints_for_error_analysis(prefix, 0.0,
-                                                                                         self.R1, self.R2, self.R3,
-                                                                                         self.L1, self.L2, self.dist_fc,
+                                                                                         self.H1, self.H2, self.H3,
+                                                                                         self.G1, self.G2, self.dist_fc,
                                                                                          self.angle_fc, self.jacks_fc,
                                                                                          self.jacks_dist, self.jacks_list,
                                                                                          self.jacks)
                 if method == 'translation':
                     restraint_list = apr_restraints.return_restraints_for_error_analysis(prefix, self.trans_dist[window],
-                                                                                         self.R1,
-                                                    self.R2, self.R3, self.L1, self.L2, self.dist_fc,
+                                                                                         self.H1,
+                                                    self.H2, self.H3, self.G1, self.G2, self.dist_fc,
                                                     self.angle_fc, self.jacks_fc, self.jacks_dist, self.jacks_list, self.jacks)
                 if method == 'release':
                     restraint_list = apr_restraints.return_restraints_for_error_analysis(prefix, self.trans_dist[-1],
-                                                                                         self.R1,
-                                                    self.R2, self.R3, self.L1, self.L2, self.dist_fc,
+                                                                                         self.H1,
+                                                    self.H2, self.H3, self.G1, self.G2, self.dist_fc,
                                                     self.angle_fc, self.jacks_fc, self.jacks_dist, self.jacks_list, self.jacks)
 
                 # Generate restraints.dat file
@@ -750,20 +750,20 @@ class APR:
             ### Copied this from above.  Need to get restraints info for get_forces!
             if method == 'attachment':
                 restraint_list = apr_restraints.return_restraints_for_error_analysis(prefix, 0.0,
-                                                                                     self.R1, self.R2, self.R3,
-                                                                                     self.L1, self.L2, self.dist_fc,
+                                                                                     self.H1, self.H2, self.H3,
+                                                                                     self.G1, self.G2, self.dist_fc,
                                                                                      self.angle_fc, self.jacks_fc,
                                                                                      self.jacks_dist, self.jacks_list,
                                                                                      self.jacks)
             if method == 'translation':
                 restraint_list = apr_restraints.return_restraints_for_error_analysis(prefix, self.trans_dist[window],
-                                                                                     self.R1,
-                                                self.R2, self.R3, self.L1, self.L2, self.dist_fc,
+                                                                                     self.H1,
+                                                self.H2, self.H3, self.G1, self.G2, self.dist_fc,
                                                 self.angle_fc, self.jacks_fc, self.jacks_dist, self.jacks_list, self.jacks)
             if method == 'release':
                 restraint_list = apr_restraints.return_restraints_for_error_analysis(prefix, self.trans_dist[-1],
-                                                                                          self.R1,
-                                                     self.R2, self.R3, self.L1, self.L2, self.dist_fc,
+                                                                                          self.H1,
+                                                     self.H2, self.H3, self.G1, self.G2, self.dist_fc,
                                                      self.angle_fc, self.jacks_fc, self.jacks_dist, self.jacks_list, self.jacks)
 
 

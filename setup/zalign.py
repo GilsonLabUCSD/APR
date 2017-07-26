@@ -24,7 +24,7 @@ def align_exception():
   print '     coordinates than the first three, so that the molecule will'
   print '     point to the desired +Z or -Z direction.\n'
   print '    -c: the new origin of the aligned structure. The selected atom'
-  print '     should be the same as the L1 option in the APR input file.\n'
+  print '     should be the same as the G1 option in the APR input file.\n'
   print '    -r: the rotation angle (in degrees) around the z axis.\n'
   print '    -cutoff: cutoff value for generating the final structure. Using'
   print '     a larger cutoff value (in Angstrom) will generate alignment with'
@@ -135,15 +135,15 @@ for i in arg_list:
     if sys.argv[i] == '-f':
       pdb_file = sys.argv[i+1]
     elif sys.argv[i] == '-a1':
-      R1 = sys.argv[i+1]
+      H1 = sys.argv[i+1]
     elif sys.argv[i] == '-a2':
-      R2 = sys.argv[i+1]
+      H2 = sys.argv[i+1]
     elif sys.argv[i] == '-a3':
-      R3 = sys.argv[i+1]
+      H3 = sys.argv[i+1]
     elif sys.argv[i] == '-a4':
-      R4 = sys.argv[i+1]
+      H4 = sys.argv[i+1]
     elif sys.argv[i] == '-c':
-      L1 = sys.argv[i+1]
+      G1 = sys.argv[i+1]
     elif sys.argv[i] == '-cutoff':
       cutoff = ismyinstance('float', sys.argv[i+1], sys.argv[i])
     elif (sys.argv[i] == '-r'):
@@ -154,11 +154,11 @@ for i in arg_list:
 checkFile(pdb_file)
 PDBatomEntries = readFile(pdb_file)
 
-idx1 = find_index(R1,PDBatomEntries)
-idx2 = find_index(R2,PDBatomEntries)
-idx3 = find_index(R3,PDBatomEntries)
-idx4 = find_index(R4,PDBatomEntries)
-idx_origin = find_index(L1,PDBatomEntries)
+idx1 = find_index(H1,PDBatomEntries)
+idx2 = find_index(H2,PDBatomEntries)
+idx3 = find_index(H3,PDBatomEntries)
+idx4 = find_index(H4,PDBatomEntries)
+idx_origin = find_index(G1,PDBatomEntries)
 
 # read coordinates and other information from the PDB file
 
