@@ -234,15 +234,15 @@ class APR:
                         self.trans_dist.append(ismyinstance('float', newline[j], self.input_file, lines[i][0]))
                 elif lines[i][0] == 'lig':
                     self.lig_name = ismyinstance('string', lines[i][1], self.input_file, lines[i][0])
-                elif lines[i][0] == 'r1':
+                elif lines[i][0] == 'h1':
                     self.H1 = lines[i][1]
-                elif lines[i][0] == 'r2':
+                elif lines[i][0] == 'h2':
                     self.H2 = lines[i][1]
-                elif lines[i][0] == 'r3':
+                elif lines[i][0] == 'h3':
                     self.H3 = lines[i][1]
-                elif lines[i][0] == 'l1':
+                elif lines[i][0] == 'g1':
                     self.G1 = lines[i][1]
-                elif lines[i][0] == 'l2':
+                elif lines[i][0] == 'g2':
                     self.G2 = lines[i][1]
                 elif lines[i][0] == 'maxcycle':
                     self.maxcycle = ismyinstance('int', lines[i][1], self.input_file, lines[i][0])
