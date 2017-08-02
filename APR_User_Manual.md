@@ -1,4 +1,4 @@
-### APR 1.1 User Manual (last updated 2017/06) ###
+### APR 1.1 User Manual (last updated 2017/06 by Jian Yin) ###
 
 # Contributors to the current code #
 
