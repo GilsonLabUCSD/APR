@@ -145,7 +145,7 @@ def setup_restraints(prefix, trans_dist, rest_weight, scale_w, H1, H2, H3, G1, G
     # if conformational restraints are applied, write extra lines
     if jacks_fc:
         for i in range(0, len(jacks_list) / 2):
-            rest_file.write('&rst iat= %-11s' % (find_index(jacks_list[i * 2])+','+find_index(jacks_list[i * 2 + 1])+','))
+            rest_file.write('&rst iat= %-11s' % (find_index(jacks_list[i * 2], 'dry.pdb')+','+find_index(jacks_list[i * 2 + 1], 'dry.pdb')+','))
             rest_file.write('%16s= %10.4f, r2= %10.4f, r3= %10.4f, r4= %10.4f, rk2= %11.7f, rk3= %11.7f, ' \
                             % ('r1', 0.0, jacks_dist, jacks_dist, 999.0, jwt, jwt) + jacks_end)
 
