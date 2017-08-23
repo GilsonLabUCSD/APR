@@ -48,19 +48,19 @@ eq_cutoff      = 9       ; 9 Angstrom cutoff distance for the van der Waals inte
 
 ; Variables for production runs 
 dt             = 4       ; A step size of 4 fs 
-nstlim         = 1250000 ; Run 1,250,000 molecular dynamics steps, to give a simulation time of 5 ns per cycle 
-ntpr           = 250     ; Write to the output file every 500 steps (1 ps) 
-ntwx           = 250     ; Write to the trajectory file (both nc and h5 format) every 500 steps (1 ps) 
+nstlim         = 625000  ; Run 1,250,000 molecular dynamics steps, to give a simulation time of 2.5 ns per cycle 
+ntpr           = 250     ; Write to the output file every 250 steps (1 ps) 
+ntwx           = 250     ; Write to the trajectory file every 250 steps (1 ps) 
 barostat       = 2       ; Options for barostat; 1 is Berendsen and 2 is Monte Carlo 
 cutoff         = 9       ; 9 Angstrom cutoff distance for the van der Waals interactions
 strip_water_ions = YES   ; Strip water and ions in the MD trajectories (YES/NO), YES is recommended to save disk space
 
-maxcycle       =  10     ; the number of trajectories in one window. The maximum number is fixed as 20.
+maxcycle       =  20     ; the number of trajectories in one window. The maximum number is fixed as 20.
 maxsem_attach  = 0.02    ; the threshold of standard error of the mean (SEM) for the forces in the attach phase; in kcal/mol
 maxsem_pull    = 0.1     ; the threshold of SEM for the forces in the pulling phase; in kcal/mol
 maxsem_release = 0.02    ; the threshold of SEM for the forces in the release phase, only used if there are (additional) conformational restraints; The value should match sem_attach
 
-jacks        = NO        ; Use conformational restraints (YES/NO)
+jacks        = YES        ; Use conformational restraints (YES/NO)
 
 ; Used if there are conformational restraints (jacks = YES)
 jacks_distance = 15.0        ; Angstrom
