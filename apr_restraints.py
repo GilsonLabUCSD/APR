@@ -179,7 +179,7 @@ def setup_restraints(prefix, trans_dist, rest_weight, scale_w, H1, H2, H3, G1, G
 
 def return_restraints_for_error_analysis(prefix, trans_dist, H1, H2, H3, G1, G2, dist_fc,
                      angle_fc, jacks_fc, jacks_dist, jacks_list, jacks):
-        # Assume that theere is a reference.dat file already...
+        # Assume that there is a reference.dat file already...
         dat_file = open('reference.dat', 'r')
         data = dat_file.readline()
         data = dat_file.readline()
