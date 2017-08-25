@@ -3,8 +3,8 @@ source leaprc.gaff
 
 # Loading the ion parameters 
 loadamberparams frcmod.ionsjc_tip3p
-loadamberparams frcmod.ionsjc_spce
-loadamberparams frcmod.ionsjc_tip4pew 
+#loadamberparams frcmod.ionsjc_spce
+#loadamberparams frcmod.ionsjc_tip4pew 
 
 loadamberparams oa.frcmod
 OCT = loadmol2 oa.mol2
