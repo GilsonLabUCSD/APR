@@ -60,7 +60,7 @@ maxsem_attach  = 0.02    ; the threshold of standard error of the mean (SEM) for
 maxsem_pull    = 0.1     ; the threshold of SEM for the forces in the pulling phase; in kcal/mol
 maxsem_release = 0.02    ; the threshold of SEM for the forces in the release phase, only used if there are (additional) conformational restraints; The value should match sem_attach
 
-jacks        = YES        ; Use conformational restraints (YES/NO)
+jacks        = NO        ; Use conformational restraints (YES/NO)
 
 ; Used if there are conformational restraints (jacks = YES)
 jacks_distance = 15.0        ; Angstrom
