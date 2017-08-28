@@ -139,7 +139,7 @@ def setup_solvate(warning, water_model, waters, ion_list, isAmber16):
            print line
        # Program not terminated in case the user actually prefers a non-neutralized system,for whatever reason.
            print ('The system is not neutralized properly. Are you sure you want to continue?')
-           print('Maybe you should check the solvation.log file, and ion types specified in the APR input file.')
+           print('Maybe you should check the solvated_tleap.log file, and ion types specified in the APR input file.')
         if "addIonsRand: Argument #2 is type String must be of type: [unit]" in line:
            print('Aborted.The ion types specified in the APR input file could be wrong.')
            print('Please check the solvation.log file, and the ion types specified in the APR input file.\n')
