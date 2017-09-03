@@ -20,8 +20,8 @@ angle_force     = 100.0  ; kcal/mol/rad**2
 
 ; Solvation
 water_model     = TIP3P     
-waters          = 2200
-warning         = NO     ; A warning message can be printed out if the number of water molecules requested above is not close to estimation (YES/NO)
+waters          = 2500
+warning         = NO      ; A warning message can be printed out if the number of water molecules requested above is not close to estimation (YES/NO)
 
 ; Counterions 
 neutralizing_cation = Na+ ; for neutralization only, not used for positively charged or neutral system
@@ -63,8 +63,8 @@ maxsem_release = 0.02    ; the threshold of SEM for the forces in the release ph
 jacks        = NO        ; Use conformational restraints (YES/NO)
 
 ; Used if there are conformational restraints (jacks = YES)
-jacks_distance = 15.0        ; Angstrom
-jacks_force = 25.0        ; kcal/mol/Angstrom**2
+jacks_distance = 15.0     ; Angstrom, value may vary according to different systems        
+jacks_force = 25.0        ; kcal/mol/Angstrom**2, values may vary according to different systems
 
 jacks_list =  [:OCT@O20,   :OCT@O19,
               :OCT@O13,   :OCT@O18,
