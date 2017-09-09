@@ -175,9 +175,12 @@ class APR:
                 lines[i] = lines[i].split(';')[0].split('=')
                 if len(lines[i]) == 1:
                     j = i
+                    if i == 0:
+                        print('Wrong format of the user input file. Aborted.\n')
+                        sys.exit(1)
                     while True:
-                        if lines[j - 1] != ';':
-                            lines[j - 1][1] += lines[i][0]
+                        if lines[j-1] != ';':
+                            lines[j-1][1] += lines[i][0]
                             lines[i] = ';'
                             break
                         j -= 1
@@ -340,17 +343,22 @@ class APR:
             if (self.action2 == 'continue') and (os.path.isfile('%s/eqnpt50.rst7' % destination)):
                 print('Skipping folder %s' % destination)
 
-            else:
-                for file in glob.glob('setup/param_files/*'):
+            elif self.action2 == 'overwrite':
+                for file in glob.glob('setup/param_files/*.mol2'):
                     shutil.copy(file, destination)
-                #for file in glob.glob('setup/input_files/*'):
-                    #shutil.copy(file, destination)
+                for file in glob.glob('setup/param_files/*.frcmod'):
+                    shutil.copy(file, destination)
+
+                if self.perturb == 'yes':
+                    shutil.copy('setup/param_files/new_params.dat', destination)  
+
                 shutil.copy('setup/align_z.pdb', destination)
-            if self.amber16 == 'yes':
-                shutil.copy('setup/input_files/tleap.in.amber16', '%s/tleap.in'%(destination))
-            else:
-                # Assuming Amber14 or Amber12
-                shutil.copy('setup/input_files/tleap.in.amber14', '%s/tleap.in'%(destination))
+
+                if self.amber16 == 'yes':
+                    shutil.copy('setup/input_files/tleap.in.amber16', '%s/tleap.in'%(destination))
+                else:
+                    # Assuming Amber14 or Amber12
+                    shutil.copy('setup/input_files/tleap.in.amber14', '%s/tleap.in'%(destination))
 
     def check_executable(self):
         """
@@ -361,17 +369,17 @@ class APR:
 
         exe_str = self.exe_path.split()
         for i in range(0, len(exe_str)):
-          if '-np' in exe_str[i]:
-            flag = i
-          if 'pmemd' in exe_str[i] or 'sander' in exe_str[i]:
-            print ('%s is on.'%(exe_str[i]))
-            commonExe = 1
+            if '-np' in exe_str[i]:
+                flag = i
+            if 'pmemd' in exe_str[i] or 'sander' in exe_str[i]:
+                print ('%s is on.'%(exe_str[i]))
+                commonExe = 1
 
         if commonExe == 0:
             print 'Neither pmemd nor sander has been defined. Are you sure this is the right executable?'
 
         if flag < len(exe_str) and flag > 0:
-          print ('Totally %d processors are used.'%(int(exe_str[flag+1])))
+            print ('Totally %d processors are used.'%(int(exe_str[flag+1])))
 
     def prepare_and_simulate(self, method):
         """
