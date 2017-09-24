@@ -22,16 +22,16 @@ Air Force Office of Scientific Research (AFOSR) Basic Research Initiative (BRI) 
 Please use the following papers when citing APR method or scripts:
 
 Henriksen NM, Fenley AT, Gilson MK. Computational Calorimetry: High-Precision Calculation of Host-Guest Binding Thermodynamics. 
-J. Chem. Theory Comput., 2015, 11(9), 4377-4394. http://pubs.acs.org/doi/abs/10.1021/acs.jctc.5b00405.
+_J. Chem. Theory Comput._, __2015__, _11(9)_, 4377-4394. http://pubs.acs.org/doi/abs/10.1021/acs.jctc.5b00405.
 
 Yin J, Henriksen NM, Slochower DR, Gilson MK. The SAMPL5 Host-Guest Challenge: Computing Binding Free Energies and Enthalpies from Explicit Solvent Simulations by the Attach-Pull-Release
- (APR) Method J. Comput. Aided Mol. Des., 2017, 31(1), 133-145. http://link.springer.com/article/10.1007/s10822-016-9970-8.
+ (APR) Method. _J. Comput. Aided Mol. Des._, __2017__, _31(1)_, 133-145. http://link.springer.com/article/10.1007/s10822-016-9970-8.
 
 Velez-Vega C, Gilson MK. Overcoming Dissipation in the Calculation of Standard Binding Free Energies by Ligand Extraction. 
-J. Comput. Chem., 2013, 34(27), 2360-2371. http://onlinelibrary.wiley.com/doi/10.1002/jcc.23398/full.
+_J. Comput. Chem._, __2013__, _34(27)_, 2360-2371. http://onlinelibrary.wiley.com/doi/10.1002/jcc.23398/full.
 
 Fenley AT, Henriksen NM, Muddana HS, Gilson MK. Bridging Calorimetry and Simulation through Precise Calculations of Cucurbituril-Guest Binding Enthalpies. 
-J. Chem. Theory Comput., 2014, 10(9), 4069-4078. http://pubs.acs.org/doi/abs/10.1021/ct5004109.
+_J. Chem. Theory Comput._, __2014__, _10(9)_, 4069-4078. http://pubs.acs.org/doi/abs/10.1021/ct5004109.
 
 # Introduction #
 
