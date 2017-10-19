@@ -178,8 +178,8 @@ Force constant for the angle and torsion restraints imposed on the receptor and 
 The angle and torsion restraints are currently not available for the conformational restraints (see the jacks_force option). 
 
 ### solvent_model \<string> ###
-APR currently supports TIP3P, TIP4P-Ew, OPC, SPC/E, CHCl3, MeOH and NMA solvent models. The names of the solvent models are not case sensitive. In addition, "TIP4P-Ew" and "TIP4PEW" are 
-both acceptable, same for "SPC/E" and "SPCE".
+APR currently supports TIP3P, TIP4P-Ew, OPC, SPC/E, CHCl3, MeOH and NMA solvent models. You can also perturb the van der Waals parameters of those solvent models (see option "perturb").
+The names of the solvent models are not case sensitive. In addition, "TIP4P-Ew" and "TIP4PEW" are both acceptable, same for "SPC/E" and "SPCE".
 
 ### number_solvents \<int> ###
 The target value of solvent molecules to be added to the simulation box in each window. The tleap program in Amber does not provide the feature of solvating a system with a fixed number of 
