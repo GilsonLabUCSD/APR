@@ -1,4 +1,4 @@
-### APR 1.1 User Manual (last updated 2017/06 by Jian Yin) ###
+### APR 1.1 User Manual (last updated 2017/11 by Jian Yin) ###
 
 # Contributors to the current code #
 
@@ -65,7 +65,7 @@ Work stations that enable GPU acceleration of Amber are also highly recommended 
 but it can take much longer to finish the calculations.
 
 ## Topology and coordinate Files ##
-The current APR scripts do not include a built-in docking program. Therefore, a PDB file of the bound structure needs to be provided with all the water molecules and counterions removed,
+The current APR scripts do not include a built-in docking program. Therefore, a PDB file of the bound structure needs to be provided with all the solvent molecules and counterions removed,
 since those will be added within the APR workflow later on. For small molecules,
 mol2 files and possibly frcmod files are required. Those files need to be saved in the ./APR/setup/pdb and ./APR/setup/parameter_files directories, accordingly. They should also be indicated
 in ./APR/setup/input_files/tleap.in.amber16, if using Amber16, and in ./APR/setup/input_files/tleap.in.amber14, if using Amber14. The Amber topology (.prmtop) and coordinate (.inpcrd)
@@ -126,10 +126,10 @@ when computing the bind free energy for your own system. The template user input
 
 ## How to write an APR input file ##
 The APR input file can be named by the users and should be indicated by the flag "-i" in the command line. A template of the APR input file, apr.in, is available in the APR package.
-Comments starting with a semicolon in this file will not be parsed. The values of the options are case sensitive (except for YES, NO, ON and OFF) while the options themselves are not. 
+Comments starting with a semicolon in this file will not be parsed.  
 Not providing options or simply leaving the values blank may not cause abortion of the program, but it will likely cause unexpected consequences. Therefore, it is strongly recommended to specify
-all the listed options as instructed in the template file. Options and values are separated with an equal sign (" = "). The spaces before and after the equal sign are not mandatory.
-On the other hand, some options contain underscores (" _ ") to make sure that they are parsed as continuous strings. Please do not replace them with spaces or hyphens.   
+all the listed options as instructed in the template file. Options and values are separated with an equal sign (=). The spaces before and after the equal sign are not mandatory.
+On the other hand, some options contain underscores (_) to make sure that they are parsed as continuous strings. Please do not replace them with spaces or hyphens.   
       
 Options are explained below in details.
 
@@ -148,7 +148,7 @@ For more details for the HMR technique, please read: Hopkins, Chad W., et al. "L
 Journal of chemical theory and computation 11.4 (2015): 1864-1874.
     
 ### exe_path \<'pmemd.cuda','mpirun -np 12 pmemd.MPI', 'pmemd', 'sander'...> ###
-Executables to run MD simulations, depending on your computing environment. 
+Executables to run MD simulations, depending on your computing environment. Options are case sensitive. 
 
 ### temperature \<float> ###
 The same temperature will be used for equilibration, production and data analysis.
@@ -178,16 +178,17 @@ Force constant for the angle and torsion restraints imposed on the receptor and 
 The angle and torsion restraints are currently not available for the conformational restraints (see the jacks_force option). 
 
 ### solvent_model \<string> ###
-APR currently supports TIP3P, TIP4P-EW, OPC, SPC/E, CHCl3, MeOH and NMA solvent models.
+APR currently supports TIP3P, TIP4P-Ew, OPC, SPC/E, CHCl3, MeOH and NMA solvent models. The names of the solvent models are not case sensitive. In addition, "TIP4P-Ew" and "TIP4PEW" are 
+both acceptable, same for "SPC/E" and "SPCE".
 
 ### number_solvents \<int> ###
-The target value of water molecules to be added to the simulation box in each window. The tleap program in Amber does not provide the feature of solvating a system with a fixed number of 
-water molecules. To add the same number of water molecules to the simulation box in each window, the APR solvation module adopts an iterative approach which will gradually reduce
-the difference between the amount of added water and the target value. 
+The target value of solvent molecules to be added to the simulation box in each window. The tleap program in Amber does not provide the feature of solvating a system with a fixed number of 
+solvent molecules. To add the same number of solvent molecules to the simulation box in each window, the APR solvation module adopts an iterative approach which will gradually reduce
+the difference between the amount of added solvents and the target value. 
 
 ### warning <yes/no> ###
-Estimations can be made in each umbrella sampling window based on the size of the system about how many water molecules are needed to solvate the system. A warning message can be printed out
-if the difference between the estimated number and target value (via the option waters) is larger than 500. Put yes to turn this warning on, and no to turn it off if 
+Estimations can be made in each umbrella sampling window based on the size of the system about how many solvent molecules are needed to solvate the system. A warning message can be printed out
+if the difference between the estimated number and target value (via the option number_solvents) is larger than 500. Put yes to turn this warning on, and no to turn it off if 
 the users are certain about their choices.
 
 ### neutralizing_cation \<string> ###     
@@ -277,9 +278,9 @@ Frequency of recording frames to the trajectory (in NetCDF format). If the step 
 to write the trajectory every 1 ps.
 
 ### strip_solvent_ions <yes/no> ###
-This option determines whether the water molecules and counterions will be stripped in the MD trajectories. If yes, only the solute atoms (including the dummy atoms) will be saved in the
+This option determines whether the solvent molecules and counterions will be stripped in the MD trajectories. If yes, only the solute atoms (including the dummy atoms) will be saved in the
 trajectories, otherwise all atoms will be stored. This option is corresponding to the ntwprt variable in Amber input files. Only saving the solute atoms is recommended for saving
-the disk space, if the analysis later on does not require any information from water and counterions.
+the disk space, if the analysis later on does not require any information from solvents and counterions.
 
 ### maxcycle \<int> ###
 The number of iterations(trajectories) in each window. The maximum number of iterations is fixed as 20. Note that the specified number of iterations may not always be achieved.
@@ -316,7 +317,7 @@ if jacks = yes.
 * Besides the screen output of the final results, the APR analysis module also generates two files, TI_attachment.dat and TI_translation.dat to record the 
 accumulative work after each window.    
 
-* The restart files and the trajectories are in the format of NetCDF, but can be converted to other formats such as inpcrd or PDB using Cpptraj. If water and ions are stripped, 
+* The restart files and the trajectories are in the format of NetCDF, but can be converted to other formats such as inpcrd or PDB using Cpptraj. If solvents and ions are stripped, 
 vac.prmtop (topology in the gas phase) should be used for parsing the trajectories instead of solvated.prmtop.
 
 * If necessary, more pmemd/sander options can be modified directly in the apr_mdin.py file. 
