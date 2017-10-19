@@ -147,7 +147,7 @@ the Amber built-in or the stand-alone version of parmEd.
 For more details for the HMR technique, please read: Hopkins, Chad W., et al. "Long-time-step molecular dynamics through hydrogen mass repartitioning." 
 Journal of chemical theory and computation 11.4 (2015): 1864-1874.
     
-### exe_path \<'pmemd.cuda','mpirun -np 12 pmemd.MPI', 'pmemd', 'sander'...> ###
+### exe_path \<'pmemd.cuda', 'mpirun -np 12 pmemd.MPI', 'pmemd', 'sander'...> ###
 Executables to run MD simulations, depending on your computing environment. Options are case sensitive. 
 
 ### temperature \<float> ###
