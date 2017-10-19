@@ -177,10 +177,10 @@ The force constant of conformational restraints (if any) is specified separately
 Force constant for the angle and torsion restraints imposed on the receptor and ligand atoms. The unit is kcal/mol/rad**2. This is only for the translational and rotational restraints.
 The angle and torsion restraints are currently not available for the conformational restraints (see the jacks_force option). 
 
-### water_model \<string> ###
-This option supports all the water models available in Amber: TIP3P, TIP4P, TIP4PEW, TIP5P, OPC etc.
+### solvent_model \<string> ###
+APR currently supports TIP3P, TIP4P-EW, OPC, SPC/E, CHCl3, MeOH and NMA solvent models.
 
-### waters \<int> ###
+### number_solvents \<int> ###
 The target value of water molecules to be added to the simulation box in each window. The tleap program in Amber does not provide the feature of solvating a system with a fixed number of 
 water molecules. To add the same number of water molecules to the simulation box in each window, the APR solvation module adopts an iterative approach which will gradually reduce
 the difference between the amount of added water and the target value. 
@@ -276,7 +276,7 @@ to write the output file every 1 ps.
 Frequency of recording frames to the trajectory (in NetCDF format). If the step size is 2 fs (controlled by the option dt), giving it a value of 500 will allow the Amber program
 to write the trajectory every 1 ps.
 
-### strip_water_ions <yes/no> ###
+### strip_solvent_ions <yes/no> ###
 This option determines whether the water molecules and counterions will be stripped in the MD trajectories. If yes, only the solute atoms (including the dummy atoms) will be saved in the
 trajectories, otherwise all atoms will be stored. This option is corresponding to the ntwprt variable in Amber input files. Only saving the solute atoms is recommended for saving
 the disk space, if the analysis later on does not require any information from water and counterions.

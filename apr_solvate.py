@@ -9,11 +9,11 @@ import subprocess as sp
 import sys as sys
 
 
-def setup_solvate(warning, water_model, waters, ion_list, isAmber16):
+def setup_solvate(warning, solvent_model, solvents, ion_list, isAmber16):
     """
-    Solvate the system to a certain number of waters.
-    :param target_waters: the target number of waters in the window
-    :param water_box: type of water box (must be a string that tleap recognizes)
+    Solvate the system to a certain number of solvent molecules.
+    :param target_solvents: the target number of solvent molecules in the window
+    :param solvent_box: type of solvent box (must be a string that tleap recognizes)
     :param ions: type of counterions to be added for neutralization
     :return:
     """
@@ -44,77 +44,87 @@ def setup_solvate(warning, water_model, waters, ion_list, isAmber16):
                 ion_list[1][1] = round(float(re.sub('[+-]', '', splitline[7])))
     f.close()
     
-    water_box = water_model.upper()+'BOX'
-    # Update target_waters according to the number of ions; 
-    target_waters = waters + int(ion_list[0][1]) + int(ion_list[1][1]) + int(ion_list[2][1]) + int(ion_list[3][1])
+    if solvent_model == 'SPCE':
+        solvent_box = 'SPCBOX'
+    else:
+        solvent_box = solvent_model +'BOX'
 
-    # Initialize a log file to record the thickness of the water buffer
-    # How much we should adjust the buffer in each iteration, trying to match the correct number of waters
+    # Update target_solvents according to the number of ions; 
+    target_solvents = solvents + int(ion_list[0][1]) + int(ion_list[1][1]) + int(ion_list[2][1]) + int(ion_list[3][1])
+
+    # Initialize a log file to record the thickness of the solvent buffer
+    # How much we should adjust the buffer in each iteration, trying to match the correct number of solvent molecules
     buffer_adjustment = 0.1  # Angstroms
     buffer_thickness = 9.0  # Angstroms
 
     # Call tleap for an initial estimate
-    write_leap_input(water_model, buffer_thickness, isAmber16)
-    current_waters = run_leap_and_read_output('tmp_tleap.in', 'tmp.log')
+    write_leap_input(solvent_model, buffer_thickness, isAmber16)
+    current_solvents = run_leap_and_read_output('tmp_tleap.in', 'tmp.log')
 
     count = 0
     max_count = 100
     refinement_threshold = 10
 
-    # Generate a warning message when the number of water requested is not close to our estimation.
-    if warning == 'yes' and abs(current_waters - waters) > 500:   
-        if current_waters - waters > 500:
-            print ('Warning: The requested number of water molecules added to the simulation box (%d) is probably a lot less than what is actually needed.'%(waters))
-        elif current_waters - waters < 500: 
-            print ('Warning: The requested number of water molecules added to the simulation box (%d) is probably a lot more than what is actually needed.'%(waters))
-        print ('We recommend you to try something close to our estimated number of water molecules (%d).'%(current_waters)) 
+    # Generate a warning message when the number of solvent molecules requested is not close to our estimation.
+    if warning == 'yes' and abs(current_solvents - solvents) > 500:   
+        if current_solvents - solvents > 500:
+            print ('Warning: The requested number of solvent molecules added to the simulation box (%d) is probably a lot less than what is actually needed.'%(solvents))
+        elif current_solvents - solvents < 500: 
+            print ('Warning: The requested number of solvent molecules added to the simulation box (%d) is probably a lot more than what is actually needed.'%(solvents))
+        print ('We recommend you to try something close to our estimated number of solvent molecules (%d).'%(current_solvents)) 
         print ('If you do not want to see this warning message, switch the warning attribute from ON to OFF in the APR input file.\n')        
 
-    while current_waters != target_waters:
+    while current_solvents != target_solvents:
         count += 1
         if count > max_count:
         # Try a larger refinement threshold
              refinement_threshold += 1
         # If we are really close, redefine the target_adjustment to make smaller steps.
         manual_removal = None
-        if abs(current_waters - target_waters) < 20:
+        if abs(current_solvents - target_solvents) < 20:
             buffer_adjustment = 0.01
-        # If we are really really close and we have more waters than necessary, we can manually remove a couple
-        if current_waters > target_waters and (current_waters - target_waters) < refinement_threshold:
-            difference = current_waters - target_waters
-            manual_removal = [target_waters + 1 + i for i in range(difference)]
-            write_leap_input(water_model, buffer_thickness, isAmber16, manual_removal)
+        # If we are really really close and we have more solvent molecules than necessary, we can manually remove a couple
+        if current_solvents > target_solvents and (current_solvents - target_solvents) < refinement_threshold:
+            difference = current_solvents - target_solvents
+            manual_removal = [target_solvents + 1 + i for i in range(difference)]
+            write_leap_input(solvent_model, buffer_thickness, isAmber16, manual_removal)
             run_leap_and_read_output('tmp_tleap.in', 'tmp.log')
             break
-        # If we have more waters than we want, reduce the buffer thickness
-        if current_waters > target_waters:
+        # If we have more solvents than we want, reduce the buffer thickness
+        if current_solvents > target_solvents:
             buffer_thickness -= buffer_adjustment
-        # Otherwise, we need more waters, increase the buffer thickness
-        if current_waters < target_waters:
+        # Otherwise, we need more solvents, increase the buffer thickness
+        if current_solvents < target_solvents:
             buffer_thickness += buffer_adjustment
-        write_leap_input(water_model, buffer_thickness,isAmber16)
-        current_waters = run_leap_and_read_output('tmp_tleap.in', 'tmp.log')    
+        write_leap_input(solvent_model, buffer_thickness,isAmber16)
+        current_solvents = run_leap_and_read_output('tmp_tleap.in', 'tmp.log')    
 
-    # Compose the final leap input file from the solvate leap input stub and the final number of waters
+    # Compose the final leap input file from the solvate leap input stub and the final number of solvent molecules
     shutil.copy('tleap.in', 'solvate_tleap.in')
     sol_file = open('solvate_tleap.in', 'a')
-    if isAmber16!='yes' and water_model!='TIP3P':
-        sol_file.write('# load the water parameters\n')
-        sol_file.write('loadamberparams frcmod.%s\n'%(water_model.lower()))
-    elif isAmber16=='yes':
-        sol_file.write('# load the water parameters\n')        
-        sol_file.write('source leaprc.water.%s\n'%(water_model.lower()))
+    sol_file.write('# load the solvent parameters\n')
+    if isAmber16!='yes' and solvent_model!='TIP3P':
+        sol_file.write('# load the solvent parameters\n')
+        sol_file.write('loadamberparams frcmod.%s\n'%(solvent_model.lower()))
+    elif ((isAmber16=='yes') and (solvent_model in ['TIP3P', 'TIP4PEW', 'OPC'])):
+        sol_file.write('source leaprc.water.%s\n'%(solvent_model.lower()))
+    elif ((isAmber16=='yes') and (solvent_model == 'SPCE')):
+        sol_file.write('source leaprc.water.%s\n'%(solvent_model.lower()))
+        sol_file.write('loadamberparams frcmod.%s\n'%(solvent_model.lower()))
+    elif ((isAmber16=='yes') and (solvent_model in ['CHCL3','MEOH','NMA'])): 
+        sol_file.write('loadOff solvents.lib\n')
+        sol_file.write('loadamberparams frcmod.%s\n'%(solvent_model.lower()))
 
-    sol_file.write('solvatebox model ' + water_box + ' {10.0 10.0 ' + str(buffer_thickness) + '}\n\n')
+    sol_file.write('solvatebox model ' + solvent_box + ' {10.0 10.0 ' + str(buffer_thickness) + '}\n\n')
     if manual_removal is not None:
-        for water in manual_removal:
-            sol_file.write('remove model model.%s\n' % water)
+        for solvent in manual_removal:
+            sol_file.write('remove model model.%s\n' % solvent)
         sol_file.write('\n')
     # Make the system neutral by putting a final '0'
-    # For the tutorial, this should add 9 ions at the expense of water molecules
-    if (ion_list[0][1] != 0):
+    # For the tutorial, this should add 9 ions at the expense of solvent molecules
+    if ((ion_list[0][1] != 0) and (solvent_model.lower() not in ['chcl3','meoh','nma'])):
         sol_file.write('addionsrand model %s 0\n' % (ion_list[0][0]))
-    if (ion_list[1][1] != 0):
+    if ((ion_list[1][1] != 0) and (solvent_model.lower() not in ['chcl3','meoh','nma'])):
         sol_file.write('addionsrand model %s 0\n' % (ion_list[1][0]))
     if (ion_list[2][1] != 0):
         sol_file.write('addionsrand model %s %d\n' % (ion_list[2][0], ion_list[2][1]))
@@ -129,19 +139,18 @@ def setup_solvate(warning, water_model, waters, ion_list, isAmber16):
     p = sp.call('tleap -s -f solvate_tleap.in > solvate_tleap.log', shell=True)
     
     f = open('solvate_tleap.log', 'r')
-    added_waters = target_waters
+    added_solvents = target_solvents
     for line in f:
         if "Could not open file" in line:
            print 'WARNING!!!'
            print line
            sys.exit(1)
-        if "WARNING: The unperturbed charge of the unit:" in line:
+        if ("WARNING: The unperturbed charge of the unit:" in line) and warning == 'yes':
            print line
-       # Program not terminated in case the user actually prefers a non-neutralized system,for whatever reason.
            print ('The system is not neutralized properly. Are you sure you want to continue?')
            print('Maybe you should check the solvated_tleap.log file, and ion types specified in the APR input file.')
         if "addIonsRand: Argument #2 is type String must be of type: [unit]" in line:
-           print('Aborted.The ion types specified in the APR input file could be wrong.')
+           print('Aborted. The ion types specified in the APR input file could be wrong.')
            print('Please check the solvation.log file, and the ion types specified in the APR input file.\n')
            sys.exit(1)
     f.close()
@@ -152,25 +161,41 @@ def setup_solvate(warning, water_model, waters, ion_list, isAmber16):
     sp.call('rm leap.log', shell=True)
 
 
-def write_leap_input(water_model, local_buff, isAmber16, manual_removal=None):
+def write_leap_input(solvent_model, local_buff, isAmber16, manual_removal=None):
     """
-    Write a tleap input file that solvates according to the water type and buffer size in Angstroms.
-    :param water_box: type of water box (must be a string that tleap recognizes)
+    Write a tleap input file that solvates according to the solvent type and buffer size in Angstroms.
+    :param solvent_box: type of solvent box (must be a string that tleap recognizes)
     :param local_buff: size of z-axis buffer in Angstroms
-    :param manual_removal: can be a list to tleap to move a few, specific waters.
+    :param manual_removal: can be a list to tleap to move a few, specific solvents.
     :return:
     """
     # Copy tleap.in to tmp_tleap.in
     shutil.copy('tleap.in', 'tmp_tleap.in')
     tmp_file = open('tmp_tleap.in', 'a')
-    if isAmber16!='yes' and water_model!='TIP3P':  
-        tmp_file.write('loadamberparams frcmod.%s\n'%(water_model.lower()))
+
+    if solvent_model == 'SPCE':
+        solvent_box = 'SPCBOX'
+    else:
+        solvent_box = solvent_model +'BOX'
+
+    if isAmber16!='yes' and solvent_model!='TIP3P':  
+        tmp_file.write('loadamberparams frcmod.%s\n'%(solvent_model.lower()))
+    elif ((isAmber16=='yes') and (solvent_model.lower() in ['tip3p', 'tip4pew', 'opc'])):
+        tmp_file.write('source leaprc.water.%s\n'%(solvent_model.lower()))
+    elif ((isAmber16=='yes') and (solvent_model	== 'SPCE')):
+       	tmp_file.write('source leaprc.water.%s\n'%(solvent_model.lower()))
+        tmp_file.write('loadamberparams frcmod.%s\n'%(solvent_model.lower()))
+    elif ((isAmber16=='yes') and (solvent_model.lower() in ['chcl3','meoh','nma'])):
+        tmp_file.write('loadOff solvents.lib\n')
+        tmp_file.write('loadamberparams frcmod.%s\n'%(solvent_model.lower()))
     elif isAmber16=='yes':
-        tmp_file.write('source leaprc.water.%s\n'%(water_model.lower()))
-    tmp_file.write('solvatebox model ' + water_model+'BOX' + ' {10.0 10.0 ' + str(local_buff) + '}\n')
+        print('Warning: your solvent model is currently not supported by APR.\n')
+        print('currently supported types include: TIP3P   TIP4P-Ew   OPC   SPC/E   CHCl3   MeOH   NMA\n') 
+        sys.exit(1)
+    tmp_file.write('solvatebox model ' + solvent_box + ' {10.0 10.0 ' + str(local_buff) + '}\n')
     if manual_removal is not None:
-        for water in manual_removal:
-            tmp_file.write('remove model model.%s' % water)
+        for solvent in manual_removal:
+            tmp_file.write('remove model model.%s' % solvent)
             tmp_file.write('\n')
     tmp_file.write('quit')
     tmp_file.close()
@@ -178,22 +203,22 @@ def write_leap_input(water_model, local_buff, isAmber16, manual_removal=None):
 
 def run_leap_and_read_output(tleap_in, outlog):
     """
-    Run tleap and get the number of waters for a given buffer padding.
+    Run tleap and get the number of solvents for a given buffer padding.
     :return:
     """
     p = sp.call('tleap -s -f %s > %s'%(tleap_in, outlog), shell=True)
     # Search the key word "Added" in tleap log file
-    current_waters = None
+    current_solvents = None
     f = open(outlog, 'r')
     for line in f:
         if "Added" in line:
-            current_waters = line[line.find('Added') + len('Added'):].split()
-            current_waters = int(current_waters[0])
+            current_solvents = line[line.find('Added') + len('Added'):].split()
+            current_solvents = int(current_solvents[0])
     f.close()
-    if current_waters is None:
+    if current_solvents is None:
         print('It appears there was a problem running tleap.')
         print('Maybe check tleap.in and your AMBER version option in your APR input file.') 
-        print('You may also need to adjust the number of water molecules requested.\n')
+        print('You may also need to adjust the number of solvent molecules requested.\n')
         sys.exit(1)
-    return current_waters
+    return current_solvents
 

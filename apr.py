@@ -46,15 +46,15 @@ class APR:
         # and extra ions to mimic the salt buffer
         self.ions = []
 
-        # Target number of waters (plus ions) in each window
-        self.waters = 5000
-        self.warning = 'on'   # Provide an estimation for number of water molecules needed for full solvation
+        # Target number of solvent molecules (plus ions) in each window
+        self.num_solvent = 5000
+        self.warning = 'on'   # Provide an estimation for number of solvent molecules needed for full solvation
 
         # Total number of atoms in solute (dummy atoms included)
         self.solute_atoms = 0 
 
-        # Water model for solvation
-        self.water_model = 'TIP3P'
+        # Solvent model for solvation
+        self.solvent_model = 'TIP3P'
 
         # Receptor and ligand atoms for the restraints (accept AMBER style mask)
         self.lig_name = 'None'
@@ -73,7 +73,7 @@ class APR:
         self.ntwx = 500  # trajectory output frequency          
         self.barostat = 2   # Monte Carlo barostat
         self.cutoff = 9     # vdW cutoff in angstrom
-        self.strip = 'yes'  # strip water molecules and ions in the MD trajectories (to save disc space)
+        self.strip = 'yes'  # strip solvent molecules and ions in the MD trajectories (to save disc space)
  
         # Attributes for the equilibration phase
        	self.eq_stepsize = 2 # unit: fs
@@ -195,7 +195,7 @@ class APR:
                     self.hmr = read_bool_attributes(lines[i][1],lines[i][0])
                 elif lines[i][0] == 'perturb':
                     self.perturb = read_bool_attributes(lines[i][1],lines[i][0])
-                elif lines[i][0] == 'strip_water_ions':
+                elif lines[i][0] == 'strip_solvent_ions':
                     self.strip = read_bool_attributes(lines[i][1],lines[i][0])
                 elif lines[i][0] == 'temperature':
                     self.analysis_temperature = ismyinstance('float', lines[i][1], self.input_file, lines[i][0])
@@ -206,11 +206,11 @@ class APR:
                     self.dist_fc = ismyinstance('float', lines[i][1], self.input_file, lines[i][0])
                 elif lines[i][0] == 'angle_force':
                     self.angle_fc = ismyinstance('float', lines[i][1], self.input_file, lines[i][0])
-                elif lines[i][0] == 'water_model':
-                    # A known water model is not required here to enhance flexibility.
-                    # If you want to use your own water model, make sure the water topology files are available and
+                elif lines[i][0] == 'solvent_model':
+                    # A known solvent model is not required here to enhance flexibility.
+                    # If you want to use your own solvent model, make sure the solvent topology files are available and
                     # Amber can read them in correctly.
-                    self.water_model = lines[i][1].upper()
+                    self.solvent_model = lines[i][1].upper()
                 elif lines[i][0] == 'warning':
                     self.warning = read_bool_attributes(lines[i][1],lines[i][0])
                 elif lines[i][0] == 'neutralizing_cation':
@@ -225,8 +225,8 @@ class APR:
                     extra_anion = ismyinstance('string', lines[i][1], self.input_file, lines[i][0])
                 elif lines[i][0] == 'number_anions':
                     num_anions = ismyinstance('int', lines[i][1], self.input_file, lines[i][0])
-                elif lines[i][0] == 'waters':
-                    self.waters = ismyinstance('int', lines[i][1], self.input_file, lines[i][0])
+                elif lines[i][0] == 'number_solvents':
+                    self.num_solvent = ismyinstance('int', lines[i][1], self.input_file, lines[i][0])
                 elif lines[i][0] == 'attach_list':
                     newline = lines[i][1].strip('\'\"-,.:;][').split(',')
                     for j in range(0, len(newline)):
@@ -313,6 +313,13 @@ class APR:
         if self.maxcycle > 20:
             print('\nAborted! Please assign a value equal to or smaller than 20 for the maxcycle option.\n')
             sys.exit(1)
+
+    
+        if self.solvent_model == 'TIP4P-EW':
+            self.solvent_model = 'TIP4PEW'
+        elif self.solvent_model == 'SPC/E':
+            self.solvent_model = 'SPCE'
+
 
     def make_files_and_directories(self, method):
         """
@@ -440,8 +447,8 @@ class APR:
                 scale_w = 1.0
                 apr_translate.setup_translate(self.trans_dist[window], self.lig_residue)
 
-            # Add the correct number of waters 
-            apr_solvate.setup_solvate(self.warning, self.water_model, self.waters, self.ions, self.amber16)
+            # Add the correct number of solvent molecules 
+            apr_solvate.setup_solvate(self.warning, self.solvent_model, self.num_solvent, self.ions, self.amber16)
 
             # Find the total number of solute atoms and the residue serial number of the first dummy atom:
             solute_atoms = 0
@@ -516,7 +523,7 @@ class APR:
                 elif status == 1:
                     print('Equilibration failed in window %s%02d' % (prefix, window))
                     print('Re-running solvation step.')
-                    apr_solvate.setup_solvate(self.warning, self.water_model, self.waters, self.ions, self.amber16)
+                    apr_solvate.setup_solvate(self.warning, self.solvent_model, self.num_solvent, self.ions, self.amber16)
                     equilibration_counter += 1
 
             if equilibration_counter == 5:
@@ -1011,8 +1018,8 @@ def read_bool_attributes(input, attribute):
             hint += ' An input file including the new values of parameters (new_params.dat) is then required in the folder setup/param_files.\n'
         elif attribute == 'hmr':
             hint = 'whether hydrogen mass repartitioning will be used.\n'
-        elif attribute == 'strip_water_ions':
-            hint = 'whether to strip water and ions in the MD trajectories.\n'
+        elif attribute == 'strip_solvent_ions':
+            hint = 'whether to strip solvent molecules and ions in the MD trajectories.\n'
         elif attribute == 'jacks':
             hint = 'whether the conformational restraints are needed.\n'
         elif attribute == 'warning':
