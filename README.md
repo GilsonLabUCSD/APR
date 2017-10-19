@@ -5,7 +5,8 @@ You can apply it on most host-guest complexes with a minimal effort of setting u
 If you are planning on computing the binding affinities for proteins, please be aware that
 careful adjustments of the protocols and scripts will be needed, based on the requirements of every particular system. In addition,
 be extremely cautious about using the APR approach to compute binding affinities for proteins with buried binding sites, as those
-may present convergence issues due to the significant conformational change of the protein during the pulling process.     
+may present convergence issues due to the significant conformational change of the protein during the pulling process. The APR tutorial for Amber users is available here:
+__http://ambermd.org/tutorials/advanced/tutorial29/__     
 
 The APR protocols have been used to generate moderate to strong correlations between experimental and computational binding thermodynamics based on a broad testing of host-guest systems
  including cucurbit[7]uril (CB7), octa acid (OA), tetra-endo-methyl octa-acid (TEMOA), α- and β-cyclodextrin (CD) with guest molecules. For the detailed theoretical framework, methodology, and validation of APR, please refer to the following publications:
