@@ -1,0 +1,5 @@
+Usage:
+
+python test.py
+
+Note that it only tests the error estimate module, so it won't find errors in others such as solvation and restraint imposing.
