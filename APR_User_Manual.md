@@ -314,26 +314,26 @@ if jacks = yes.
 
 ## Tips and tricks ##
 
-* Besides the screen output of the final results, the APR analysis module also generates two files, TI_attachment.dat and TI_translation.dat to record the 
-accumulative work after each window.    
+* The restart files and the trajectories are in the format of NetCDF, but can be converted to other formats such as inpcrd or PDB using CPPTRAJ. If solvents and ions are stripped, 
+vac.prmtop (topology in the gas phase) should be used for processing the trajectories instead of solvated.prmtop.
 
-* The restart files and the trajectories are in the format of NetCDF, but can be converted to other formats such as inpcrd or PDB using Cpptraj. If solvents and ions are stripped, 
-vac.prmtop (topology in the gas phase) should be used for parsing the trajectories instead of solvated.prmtop.
+* If necessary, more MD options can be modified in the apr_mdin.py file. 
 
-* If necessary, more pmemd/sander options can be modified directly in the apr_mdin.py file. 
+* Check vac_tleap.log and solvate_tleap.log for possible solvation and parameter file errors.  
 
-* Errors you encounter when first setting the APR workflow may have something to do with parameterization and solvlation steps. Usually checking the tleap log files
-vac_tleap.log and solvate_tleap.log will provide you hints about the causes of errors, as what you would normally do when troubleshooting tleap/Amber errors.  
+* It is safe to ignore the error messages "traj.0X matches no files" in the restraints.log file. The cause of those error messages is that the simulations end before
+ reaching the maximum number of iterations, which has been fixed as 20.  
 
-* It is safe to ignore the error messages such as "traj.0X matches no files" in the restraints.log file. The cause of those error messages is that the specified number of iterations
-may not always be achieved, whereas the maximum number of iterations is still fixed as 20.  
+* The disang.rest file stores all important information about how the restraints are set up in each window. 
 
-* The disang.rest file stores all essential information about how the restraints are set up in each window. 
+* When using the HMR and perturb features, checking the parmed.log file to make sure the parameters are perturbed as intended.
 
-* When using the HMR and perturb features, checking the parmed.log file is a good way to make sure that the parameters are perturbed as intended.
+* Some guests with weak affinities tend to leave the binding cavity frequently in simulations, and this behavior is often associated with a very large SEM value 
+after iterations in the attachment phase. One solution to prevent the guest from entering the bulk solvent is to add one-sided
+harmonic restraints between the host and guest atoms (see Henriksen et al. _J. Chem. Theory Comput._, __2015__, _11(9)_, 4377-4394; search for "wall restraint").      
 
-* Of course, the most safe approach to make sure everything works as intended is to visually inspect the restart files and trajectories. The configurations of your system will
-imply whether the alignment, dummy atoms, solvation, translation and restraints are all set up or done correctly.     
+* Last but not the least, the safest approach of making sure everything works as intended is to visually inspect the restart files and trajectories. 
+The conformations in your system will imply whether the alignment, dummy atoms, solvation, translation and restraints are all set up or done correctly.     
 
-   
+
    
