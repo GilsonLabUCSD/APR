@@ -157,8 +157,21 @@ class APR:
                         sys.exit(1)
                 else:
                     help_message()
-                    print('I could not find a -s or -i flag in your input.')
+                    print('I could not find the -s or -i flag in the command line.')
                     sys.exit(1)
+
+        else:   # if action == 'analysis'
+            if '-i' == sys.argv[2].lower(): 
+                self.input_file = sys.argv[3]
+                if not os.path.isfile(self.input_file):
+                    print('The input file %s does not exist.' % self.input_file)
+                    sys.exit(1)
+            else:
+                help_message()
+                print('I could not find the -i flag in the command line.')
+                sys.exit(1)
+
+
 
     def process_input_file(self):
         """

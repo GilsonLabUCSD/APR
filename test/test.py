@@ -15,14 +15,11 @@ for file in glob.glob('../*.py'):
     if file != '../test.py':   # Do not copy file that has the same name with the current script!
         shutil.copy2(file, './')
 
-for file in glob.glob('../apr.in'):
-    shutil.copy2(file, './')
-
 for file in glob.glob('test.out'):
     os.remove(file)
 
 print ('Testing apr analysis ... Sit tight :)')
-sp.call('python2 apr.py analysis -i apr.in > test.out', shell = True)
+sp.call('python2 apr.py analysis -i test.in > test.out', shell = True)
 
 # Grab the final result of binding free energy from the output file
 with open('test.out') as fr:
@@ -40,13 +37,10 @@ if (targetValLower < val < targetValUpper):
 
 # Clean up
 for file in glob.glob('*.py'):
-    if file != 'test.py':   # Do not delete itself!
+    if (file != 'test.py') and (file != 'delete.py'):   
         os.remove(file)
 
 for file in glob.glob('*.pyc'):
-    os.remove(file)
-
-for file in glob.glob('apr.in'):
     os.remove(file)
 
 for file in glob.glob('*.dat'):
