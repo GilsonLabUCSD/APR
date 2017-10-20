@@ -38,3 +38,16 @@ for i, line in enumerate(lines):
 if (targetValLower < val < targetValUpper):
     print ('Test passed!')
 
+# Clean up
+for file in glob.glob('*.py'):
+    if file != 'test.py':   # Do not delete itself!
+        os.remove(file)
+
+for file in glob.glob('*.pyc'):
+    os.remove(file)
+
+for file in glob.glob('apr.in'):
+    os.remove(file)
+
+for file in glob.glob('*.dat'):
+    os.remove(file)
