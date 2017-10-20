@@ -34,6 +34,8 @@ for i, line in enumerate(lines):
 
 if (targetValLower < val < targetValUpper):
     print ('Test passed!')
+else:
+    print ('Test failed ...')
 
 # Clean up
 for file in glob.glob('*.py'):
