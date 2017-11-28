@@ -74,13 +74,14 @@ def setup_solvate(warning, solvent_model, solvents, ion_list, isAmber16):
         print ('We recommend you to try something close to our estimated number of solvent molecules (%d).'%(current_solvents)) 
         print ('If you do not want to see this warning message, switch the warning attribute from ON to OFF in the APR input file.\n')        
 
+    manual_removal = None
+
     while current_solvents != target_solvents:
         count += 1
         if count > max_count:
         # Try a larger refinement threshold
              refinement_threshold += 1
         # If we are really close, redefine the target_adjustment to make smaller steps.
-        manual_removal = None
         if abs(current_solvents - target_solvents) < 20:
             buffer_adjustment = 0.01
         # If we are really really close and we have more solvent molecules than necessary, we can manually remove a couple
