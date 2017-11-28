@@ -1153,7 +1153,8 @@ def help_message():
     print('python2 apr.py prod -i apr.in -s overwrite')
     print('python2 apr.py analysis -i apr.in (analysis does not need the -s flag)\n')
     print('For more details, please visit the APR tutorial on the AMBER website:'
-          'http://ambermd.org/tutorials/advanced/tutorial29/\n')
+          'http://ambermd.org/tutorials/advanced/tutorial29/.\n')
+    print('To report an issue, go to https://github.com/GilsonLabUCSD/APR/issues and click on the new issue button.\n')
 
 def check_versions():
     """
