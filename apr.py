@@ -35,7 +35,7 @@ class APR:
         # Distance targets for pulling phase in Angstroms
         self.trans_dist = []
         self.md_temperature = 298.15       # Kelvin
-        self.analysis_temperature = 298.15 
+        self.analysis_temperature = 298.15
 
         # Restraint force constants
         self.dist_fc = 5.0     # kcal/mol/Angstrom**2
@@ -51,7 +51,7 @@ class APR:
         self.warning = 'on'   # Provide an estimation for number of solvent molecules needed for full solvation
 
         # Total number of atoms in solute (dummy atoms included)
-        self.solute_atoms = 0 
+        self.solute_atoms = 0
 
         # Solvent model for solvation
         self.solvent_model = 'TIP3P'
@@ -64,17 +64,17 @@ class APR:
         self.H3 = ''
         self.G1 = ''
         self.G2 = ''
-        
+
         # Attributes for the production phase
         self.hmr = 'no'
         self.stepsize = 2 # unit: fs
-        self.steps = 1250000  
+        self.steps = 1250000
         self.ntpr = 500  # energy output frequency
-        self.ntwx = 500  # trajectory output frequency          
+        self.ntwx = 500  # trajectory output frequency
         self.barostat = 2   # Monte Carlo barostat
         self.cutoff = 9     # vdW cutoff in angstrom
         self.strip = 'yes'  # strip solvent molecules and ions in the MD trajectories (to save disc space)
- 
+
         # Attributes for the equilibration phase
        	self.eq_stepsize = 2 # unit: fs
        	self.eq_steps = 2500
@@ -161,7 +161,7 @@ class APR:
                     sys.exit(1)
 
         else:   # if action == 'analysis'
-            if '-i' == sys.argv[2].lower(): 
+            if '-i' == sys.argv[2].lower():
                 self.input_file = sys.argv[3]
                 if not os.path.isfile(self.input_file):
                     print('The input file %s does not exist.' % self.input_file)
@@ -197,7 +197,7 @@ class APR:
                             lines[i] = ';'
                             break
                         j -= 1
-               
+
         for i in range(0, len(lines)):
             if not lines[i][0] == ';':
                 lines[i][0] = lines[i][0].strip().lower()
@@ -288,7 +288,7 @@ class APR:
                     self.trajout_freq = ismyinstance('int', lines[i][1], self.input_file, lines[i][0])
                 elif lines[i][0] == 'dt':
                     self.stepsize = ismyinstance('int', lines[i][1], self.input_file, lines[i][0])
-                elif lines[i][0] == 'eq_dt': 
+                elif lines[i][0] == 'eq_dt':
                     self.eq_stepsize = ismyinstance('int', lines[i][1], self.input_file, lines[i][0])
                 elif lines[i][0] == 'cutoff':
                     self.cutoff = ismyinstance('float', lines[i][1], self.input_file, lines[i][0])
@@ -315,19 +315,19 @@ class APR:
 
         if not os.path.exists('setup/align_z.pdb'):
             print('\nAborted! align_z.pdb cannot be found in the setup folder. Please use zalign.py to generate it first.\n')
-            sys.exit(1)            
+            sys.exit(1)
 
         if self.perturb == 'yes':
             if not os.path.exists('setup/param_files/new_params.dat'):
                 print('\nAborted! new_params.dat cannot be found in the setup/param_files folder.')
                 print ('Please provide new parameters for perturbation, or switch the perturb option from yes to no in the APR input.\n')
                 sys.exit(1)
-        
+
         if self.maxcycle > 20:
             print('\nAborted! Please assign a value equal to or smaller than 20 for the maxcycle option.\n')
             sys.exit(1)
 
-    
+
         if self.solvent_model == 'TIP4P-EW':
             self.solvent_model = 'TIP4PEW'
         elif self.solvent_model == 'SPC/E':
@@ -370,7 +370,7 @@ class APR:
                     shutil.copy(file, destination)
 
                 if self.perturb == 'yes':
-                    shutil.copy('setup/param_files/new_params.dat', destination)  
+                    shutil.copy('setup/param_files/new_params.dat', destination)
 
                 shutil.copy('setup/align_z.pdb', destination)
 
@@ -385,7 +385,7 @@ class APR:
         Check user defined pmemd/sander settings and echo
         """
         flag = 0
-        commonExe = 0        
+        commonExe = 0
 
         exe_str = self.exe_path.split()
         for i in range(0, len(exe_str)):
@@ -422,7 +422,7 @@ class APR:
             windows = len(self.attach_fc)
         else:
             print('Error preparing.')
-        
+
         for window in range(windows):
             destination = 'windows/%s%02d' % (prefix, window)
 
@@ -460,7 +460,7 @@ class APR:
                 scale_w = 1.0
                 apr_translate.setup_translate(self.trans_dist[window], self.lig_residue)
 
-            # Add the correct number of solvent molecules 
+            # Add the correct number of solvent molecules
             apr_solvate.setup_solvate(self.warning, self.solvent_model, self.num_solvent, self.ions, self.amber16)
 
             # Find the total number of solute atoms and the residue serial number of the first dummy atom:
@@ -503,7 +503,7 @@ class APR:
                                  self.angle_fc, self.jacks_fc, self.jacks_dist, self.jacks_list, self.strip, self.dum_resid)
 
             sys.stdout.flush()
-           
+
             apr_mdin.write_min_in(self.dum_resid)
             apr_mdin.write_therm1_in(self.dum_resid)
             apr_mdin.write_therm2_in(self.md_temp, self.dum_resid)
@@ -522,10 +522,10 @@ class APR:
                     print ('\nAborted! It seems parmEd was not installed properly.')
                     print ('In order to use HMR or run MD with perturbed GAFF parameters, please install parmEd or update it to the latest version.')
                     print ('Or you can turn both HMR and the perturbing features off in the input file and just run regular mass MD with the original GAFF parameters.\n')
-                    sys.exit(1) 
+                    sys.exit(1)
                 local_prmtop = apr_parmed.perturb_parameters(self.perturb, self.hmr, self.prmtop)
                 local_prmtop += '.prmtop'
-            else:  
+            else:
                 local_prmtop = self.prmtop + '.prmtop'
 
             for equilibration_counter in range(5):
@@ -543,7 +543,7 @@ class APR:
                 print 'APR stopped at the solvation stage. Please check whether AMBER, PMEMD, CUDA, or MPI were corrected installed and called.'
                 print 'Also check the solvation.log output file generated by tLeap to see if there are any warnings or error messages.'
                 print 'Another possiblity is that the restraints were not set correctly or reasonably. Incorrect restraints will be reflected'
-                print 'in the local disang.rest and restart (.rst7) files.\n'   
+                print 'in the local disang.rest and restart (.rst7) files.\n'
                 sys.exit(1)
 
             sys.stdout.flush()
@@ -579,8 +579,8 @@ class APR:
                         'file is missing in this window.\n' % (i, window))
                     sys.stderr.write('Please make sure the equilibration phase has been completed.\n')
                     sys.exit(1)
-             
-                # Check restraints.dat in all windows 
+
+                # Check restraints.dat in all windows
                 if stage == 'analysis':
                    if not os.path.isfile('windows/%s%02d/restraints.dat' % (i, window)):
                       sys.stderr.write(
@@ -588,11 +588,11 @@ class APR:
                           ' is missing in the %s%02d window.\n' % (i, window))
                       sys.stderr.write('Please make sure the production phase has been completed.\n')
                       sys.exit(1)
-     
+
 
     def simulate(self, method):
         """
-        Run pmemd for the production phase. 
+        Run pmemd for the production phase.
         """
         if method == 'attachment':
             prefix = 'a'
@@ -613,8 +613,8 @@ class APR:
             os.chdir(destination)
 
             print('Simulating folder {:<25} {:<10}'.format(destination, self.now()))
-            
-            mdin = 'mdin' 
+
+            mdin = 'mdin'
             if self.hmr == 'yes' and self.perturb == 'yes':
                 prmtop = self.prmtop + '.perturbed' + '.hmr' + '.prmtop'
             elif self.perturb == 'yes':
@@ -689,8 +689,11 @@ class APR:
 
                 if os.path.isfile('traj.01') and len(sp.Popen('grep TIMINGS mdout.01 | grep -o TIMINGS',stdout=sp.PIPE,
                                                       stderr=sp.PIPE, shell=True).stdout.read().splitlines()) == 1:
-                    
+
                     sp.call('cpptraj -i restraints.in >& restraints.log', shell=True)
+                else:
+                    print('It looks like the simulation did not complete successfully.')
+                    sys.exit(1)
 
                 if os.path.isfile('restraints.dat'):
                     error_value = err_estimate.error_estimate(scale_w, method, restraint_list)
@@ -703,7 +706,7 @@ class APR:
                     currcycle += 1
 
                 sys.stdout.flush()
-                 
+
                 excstr = '%s -O -p %s -ref solvated.inpcrd -c rst.%02d\
                    -i %s -o mdout.%02d -r rst.%02d -x traj.%02d -inf mdinfo.%02d -e mden.%02d' % (
                 self.exe_path, prmtop, currcycle - 1, mdin, currcycle, currcycle, currcycle, currcycle, currcycle)
@@ -745,7 +748,7 @@ class APR:
     def ti_analysis(self,method):
         """
             Set windows and run TI analysis
-        """        
+        """
         ### Determine number of windows for this phase
         windows = 0
         if method == 'attachment':
@@ -769,12 +772,12 @@ class APR:
         FrcMeans = np.zeros([total_windows], np.float64)
         FrcSEMs = np.zeros([total_windows], np.float64)
         RxnCrds = np.zeros([total_windows], np.float64)
-    
-    
+
+
         for window in range(windows):
             destination = 'windows/%s%02d' % (prefix, window)
             os.chdir(destination)
-    
+
             ### Copied this from above.  Need to get restraints info for get_forces!
             if method == 'attachment':
                 restraint_list = apr_restraints.return_restraints_for_error_analysis(prefix, 0.0,
@@ -823,7 +826,7 @@ class APR:
                     FrcSEMs[window + 1] = frcvals[4]
                     RxnCrdLoc = 1.0
                     RxnCrds[window + 1] = RxnCrdLoc
-    
+
             else:
                 frcvals = err_estimate.get_forces(method,restraint_list)
                 FrcMeans[window] = frcvals[1]
@@ -832,7 +835,7 @@ class APR:
                 RxnCrds[window] = RxnCrdLoc
 
             os.chdir('../../')
-    
+
         ### Prepare to Integrate
         BootCyc = 50000  # Num of Boot strap cycles
         if method == 'attachment' or method == 'release':
@@ -846,7 +849,7 @@ class APR:
                                                endpoint=False))  # 100 spline poins between windows
             Idx[i] = len(Xspl)
         Xspl = np.append(Xspl, RxnCrds[-1])
-    
+
         ### Integrate with bootstrapping
         Yboot = np.zeros([windows], np.float64)
         for c in range(BootCyc):
@@ -859,7 +862,7 @@ class APR:
                     Intg[i, c] = np.trapz(Yspl[0:Idx[i]], Xspl[0:Idx[i]])
                 else:  # Umbrella Translate
                     Intg[i, c] = -1 * np.trapz(Yspl[0:Idx[i]], Xspl[0:Idx[i]])
-    
+
         ### Print Integration
         ti_file = open('TI_%s.dat' % method, 'w')
         if method == 'attachment' or method == 'release':
@@ -896,32 +899,32 @@ class APR:
             self.make_files_and_directories('release')
         else:
             print('No conformational restraints applied.')
-        
+
         if self.hmr == 'yes':
             print('Hydrogen mass repartitioning (HMR) is on.\n')
 
         if self.perturb == 'yes':
             print 'The Original GAFF parameters have been perturbed. Pleace check the parmed.log file'
-            print 'in local umbrella sampling window to make sure the parameters were perturbed as intended.\n' 
+            print 'in local umbrella sampling window to make sure the parameters were perturbed as intended.\n'
 
         print ('You can use Ctrl+C to quit the program.\n')
 
         self.make_files_and_directories('attachment')
         self.make_files_and_directories('translation')
-  
+
         # Check parameter files listed in tleap.in
-        tleap_in =  open('windows/a00/tleap.in','r') 
+        tleap_in =  open('windows/a00/tleap.in','r')
         for line in tleap_in:
             splitline = line.split()
             for str in splitline:
                 if '.frcmod' in str or '.mol2' in str and splitline[0][0]!='#':
-                    if not os.path.exists('setup/param_files/%s'%(str)):                                        
+                    if not os.path.exists('setup/param_files/%s'%(str)):
                         print ('Aborted. %s cannot be found in the setup/param_files folder.'%(str))
-                        print 'Please make sure all the mol2 and frcmod files listed in tleap.in are available in the setup/param_files directory.\n' 
+                        print 'Please make sure all the mol2 and frcmod files listed in tleap.in are available in the setup/param_files directory.\n'
                         sys.exit(1)
-        tleap_in.close() 
-        # find out the serial numbers of ligand atoms based on the user input 
-        self.lig_residue = select_ligand_atoms(self.lig_name) 
+        tleap_in.close()
+        # find out the serial numbers of ligand atoms based on the user input
+        self.lig_residue = select_ligand_atoms(self.lig_name)
 
         self.prepare_and_simulate('attachment')
         self.prepare_and_simulate('translation')
@@ -1024,7 +1027,7 @@ def read_bool_attributes(input, attribute):
     if input.lower() == 'yes' or input.lower() == 'no':
         return input.lower()
     else:
-        if attribute == 'amber16':       
+        if attribute == 'amber16':
             hint = 'whether the MD will be performed using Amber16 or an older version of Amber.\n'
         if attribute == 'perturb':
             hint = 'whether parameters need to be perturbed by ParmEd.'
@@ -1036,7 +1039,7 @@ def read_bool_attributes(input, attribute):
         elif attribute == 'jacks':
             hint = 'whether the conformational restraints are needed.\n'
         elif attribute == 'warning':
-            hint = 'whether the warning messages will be printed out.\n'        
+            hint = 'whether the warning messages will be printed out.\n'
         print 'Wrong input! Please use yes or no to indicate', hint
         sys.exit(1)
 
@@ -1052,19 +1055,19 @@ def select_ligand_atoms(lig_str):
 
     lig_str = lig_str.strip(':, ')
     lig_str = filter(None,lig_str.split(','))
- 
+
     for elem in lig_str:
         if '-' in elem:
             substr = elem.split('-')
             for i in range(isInt(substr[0]), isInt(substr[1])+1):
-                residue_list.append(str(i))   
+                residue_list.append(str(i))
         else:
-            residue_list.append(elem.strip())          
+            residue_list.append(elem.strip())
 
     return residue_list
 
 def isInt(val):
-    try: 
+    try:
         int(val)
         return int(val)
     except ValueError:
@@ -1085,7 +1088,7 @@ def ismyinstance(variable_type, parameter_value, filename, parameter):
              return 0.0
          elif variable_type == 'int':
              return 0
-    
+
     # if input was provided
     if variable_type == 'float':
         try:
@@ -1134,9 +1137,9 @@ def welcome_message():
     print(' Copyright (c) 2016-2017, University of California, San Diego')
     print('**********************************************************************************')
     print('The current APR scripts may not be directly applied to protein systems, especially')
-    print('for those with buried binding sites. Careful adjustments of the protocols and scripts') 
-    print('will be needed, based on the requirements of every particular system.\n') 
-    
+    print('for those with buried binding sites. Careful adjustments of the protocols and scripts')
+    print('will be needed, based on the requirements of every particular system.\n')
+
 def help_message():
     print('python2 apr.py')
     print('    eq            Set up the APR framework and run the equilibration')
@@ -1158,7 +1161,7 @@ def help_message():
 
 def check_versions():
     """
-    Check the version of python 
+    Check the version of python
     """
     print 'Checking the version of Python installed ...'
     if sys.version_info[0]==2 and sys.version_info[1] == 7:
@@ -1178,7 +1181,7 @@ def main():
     check_versions()
     this = APR()
     this.check_arguments()
-    
+
     if this.action1 == 'setup':
         this.process_input_file()
         this.check_executable()
@@ -1201,7 +1204,7 @@ def main():
         this.check_rstfiles('analysis')
         this.run_analysis()
 
-        
+
     else:
         print('I could not understand. Please choose something to do among eq (equilibration), prod (production) or analysis.')
     sys.stdout = sys.__stdout__
